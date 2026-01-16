@@ -1,31 +1,37 @@
 #import cv2
 import keyboard
-import RPi.GPIO as GPIO
+from gpiozero import DigitalOutputDevice
 
-GPIO.setup(18, GPIO.OUT) #Vorwärts
-GPIO.setup(19, GPIO.OUT) #Rückwärts
-GPIO.setup(23, GPIO.OUT) #Rechts
-GPIO.setup(24, GPIO.OUT) #Links
+Vorn = DigitalOutputDevice(18) #Vorwärts
+Back = DigitalOutputDevice(19) #Rückwärts
+Links = DigitalOutputDevice(23) #Links
+Rechts = DigitalOutputDevice(24) #Rechts
 Move = False
 
 while True:
     if Move == True:
-        GPIO.output(23, GPIO.HIGH)
-        GPIO.output(24, GPIO.HIGH)
+        Links.on()
+        Rechts.on()
     else:
-        GPIO.output(23, GPIO.LOW)
-        GPIO.output(24, GPIO.LOW)
+        Links.off()
+        Rechts.off()
         
     if keyboard.is_pressed('w'):
         Move = True
-        GPIO.output(18, GPIO.HIGH)
+        Vorn.on()
+        print("VORWÄRTS")
 
     if keyboard.is_pressed("a"):
-        print("Links")
+        print("LINKS")
     if keyboard.is_pressed("s"):
-        print("Rück")
+        Move = True
+        Back.on()
+        print("RÜCK")
     if keyboard.is_pressed("d"):
-        print("Rechts")
+        print("RECHTS")
+
+    Vorn.off()
+    Back.off()
 
 
 '''cam = cv2.VideoCapture(0)
