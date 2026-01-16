@@ -13,19 +13,25 @@ while True:
         Links.on()
         Rechts.on()
     else:
-        GPIO.output(23, GPIO.LOW)
-        GPIO.output(24, GPIO.LOW)
+        Links.off()
+        Rechts.off()
         
     if keyboard.is_pressed('w'):
         Move = True
-        GPIO.output(18, GPIO.HIGH)
+        Vorn.on()
+        print("VORWÄRTS")
 
     if keyboard.is_pressed("a"):
         print("LINKS")
     if keyboard.is_pressed("s"):
-        print("Rück")
+        Move = True
+        Back.on()
+        print("RÜCK")
     if keyboard.is_pressed("d"):
-        print("Rechts")
+        print("RECHTS")
+
+    Vorn.off()
+    Back.off()
 
 
 '''cam = cv2.VideoCapture(0)
