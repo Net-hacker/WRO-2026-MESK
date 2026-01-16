@@ -15,17 +15,22 @@ while True:
     else:
         GPIO.output(23, GPIO.LOW)
         GPIO.output(24, GPIO.LOW)
-        
+
     if keyboard.is_pressed('w'):
         Move = True
         GPIO.output(18, GPIO.HIGH)
-
+        print("GAS")
     if keyboard.is_pressed("a"):
-        print("Links")
+        print("LINKS")
     if keyboard.is_pressed("s"):
-        print("Rück")
+        Move = True
+        GPIO.output(18, GPIO.HIGH)
+        print("RÜCK")
     if keyboard.is_pressed("d"):
-        print("Rechts")
+        print("RECHTS")
+
+    GPIO.output(18, GPIO.LOW)
+    GPIO.output(19, GPIO.LOW)
 
 
 '''cam = cv2.VideoCapture(0)
