@@ -1,4 +1,4 @@
-# WRO-2025-MESK
+# WRO-2026-MESK
 
 Das ist das Repository auf welchem der Code für unser Roboter gelagert ist. Wir nehmen mit unserem Roboter nimmt an der WRO 2026 teil.
 
