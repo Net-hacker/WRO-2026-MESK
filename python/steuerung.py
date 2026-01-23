@@ -79,7 +79,7 @@ while True:
         print("RÜCK")
 
 
-    # LENKUNG
+    # LENKUNG (this is a test)
     if keyboard.is_pressed("a") and servo_pos != "left":
         servo_set(SERVO_LEFT)
         servo_pos="left"
