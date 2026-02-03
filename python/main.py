@@ -1,3 +1,8 @@
-import time
+import threading
+from webserver import host_webserver
+import cam
+from queue import Queue
 
-from gpiozero import PWMOutputDevice, DigitalOutputDevice
+frames = Queue()
+threading.Thread(target=host_webserver, args = (frames,)).start()
+threading.Thread(target=cam.run_camera, args = (frames,)).start()
