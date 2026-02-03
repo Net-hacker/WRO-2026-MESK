@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify, send_file, Response
 import cv2
-import time
 
 flask_app = Flask(__name__)
 
 def generate_frames(frames):
     while True:
         frame = frames.get()
+        print("Getting frame from queue")
         _, buffer = cv2.imencode('.jpg', frame)
         frame_bytes = buffer.tobytes()
         yield (b'--frame\r\n'
