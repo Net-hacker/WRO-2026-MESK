@@ -1,17 +1,35 @@
-from picamera2 import Picamera2
+mode = True
+try:
+    import libcamera
+    from picamera2 import Picamera2
+except ImportError:
+    print("Modus von Raspberry Pi zu Laptiop gewechselt, da libcamera oder picamera2 nicht installiert ist.")
+    mode = False
+    import sys
 import cv2
 import numpy as np
 
 def run_camera(frames):
     print("Starte Kamera")
 
-    picam2 = Picamera2()
-    picam2.start()
-    print("Kamera erfolgreich gestartet")
+    if mode == False:
+        cam = cv2.VideoCapture(0)
+        if cam == None:
+            print("Kamera konnte nicht geoeffnet werden!")
+            sys.exit(1)
+        while cam.isOpened():
+            _, frame = cam.read()
+    else:
+        picam2 = Picamera2()
+        picam2.start()
+        print("Kamera erfolgreich gestartet")
 
     while True:
-        frame = picam2.capture_array()  # NumPy Array wie bei OpenCV
-        print("Frame aufgenommen")
+        if mode == False:
+            _, frame = cam.read()
+        else:
+            frame = picam2.capture_array()  # NumPy Array wie bei OpenCV
+            print("Frame aufgenommen")
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
