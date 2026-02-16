@@ -13,13 +13,10 @@
     <script>
       const container = document.getElementById("stream");
 
-      const streamR = document.createElement("img");
-      streamR.src = "http://localhost:5000/video_res";
-
-      const streamL = document.createElement("img");
-      streamL.src = "http://localhost:5000/video";
-
       function showResult() {
+        const streamR = document.createElement("img");
+        streamR.src = "http://localhost:5000/video_res";
+
         if ([...container.children].includes(streamL)) {
           container.removeChild(streamL);
         } else if ([...container.children].includes(streamR)) {
@@ -29,6 +26,9 @@
       }
 
       function showLive() {
+        const streamL = document.createElement("img");
+        streamL.src = "http://localhost:5000/video";
+
         if ([...container.children].includes(streamR)) {
           container.removeChild(streamR);
         } else if ([...container.children].includes(streamL)) {
