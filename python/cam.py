@@ -29,7 +29,6 @@ def run_camera(frames):
             _, frame = cam.read()
         else:
             frame = picam2.capture_array()  # NumPy Array wie bei OpenCV
-            print("Frame aufgenommen")
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 

@@ -7,6 +7,35 @@
 </head>
 <body>
     <h1>Live Kamera Stream</h1>
-    <img src="http://localhost:5000/video" alt="Live Kamera Stream">
+    <button id="ResultB" onclick="showResult()">Result</button>
+    <button id="LiveB" onclick="showLive()">Live</button>
+    <div id="stream"></div>
+    <script>
+      const container = document.getElementById("stream");
+
+      const streamR = document.createElement("img");
+      streamR.src = "http://localhost:5000/video_res";
+
+      const streamL = document.createElement("img");
+      streamL.src = "http://localhost:5000/video";
+
+      function showResult() {
+        if ([...container.children].includes(streamL)) {
+          container.removeChild(streamL);
+        } else if ([...container.children].includes(streamR)) {
+          container.removeChild(streamR);
+        }
+        container.appendChild(streamR);
+      }
+
+      function showLive() {
+        if ([...container.children].includes(streamR)) {
+          container.removeChild(streamR);
+        } else if ([...container.children].includes(streamL)) {
+          container.removeChild(streamL);
+        }
+        container.appendChild(streamL);
+      }
+    </script>
 </body>
 </html>
