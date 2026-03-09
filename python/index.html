@@ -4,38 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kamera HTTP Server</title>
+    <style>
+      .knob {
+        width: 120px;
+        height: 120px;
+        background: #ddd;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .indicator {
+        width: 4px;
+        height: 40px;
+        background: black;
+        position: absolute;
+        top: 20px;
+        transform-origin: center 40px;
+      }
+    </style>
 </head>
 <body>
     <h1>Live Kamera Stream</h1>
     <button id="ResultB" onclick="showResult()">Result</button>
     <button id="LiveB" onclick="showLive()">Live</button>
     <div id="stream"></div>
+    <input type="range" id="slider" min="0" max="255" value="50">
+    <p id="output">50</p>
     <script>
       const container = document.getElementById("stream");
+      const slider = document.getElementById("slider");
+      const output = document.getElementById("output");
+
+      slider.addEventListener("input", () => {
+        output.textContent = slider.value;
+        fetch(`/change_value?value=${slider.value}&id=Bsp`)
+          .then(response => response.text())
+          .then(response => console.log(response))
+      });
 
       function showResult() {
+        const existingR = document.getElementById("streamR");
+        const existingL = document.getElementById("streamL");
+        if (existingL) container.removeChild(existingL);
+        if (existingR) { container.removeChild(existingR); return; }
         const streamR = document.createElement("img");
-        streamR.src = "http://localhost:5000/video_res";
-
-        if ([...container.children].includes(streamL)) {
-          container.removeChild(streamL);
-        } else if ([...container.children].includes(streamR)) {
-          container.removeChild(streamR);
-        }
+        streamR.id = "streamR";
+        streamR.src = "/video_res";
         container.appendChild(streamR);
       }
 
       function showLive() {
+        const existingR = document.getElementById("streamR");
+        const existingL = document.getElementById("streamL");
+        if (existingR) container.removeChild(existingR);
+        if (existingL) { container.removeChild(existingL); return; }
         const streamL = document.createElement("img");
-        streamL.src = "http://localhost:5000/video";
-
-        if ([...container.children].includes(streamR)) {
-          container.removeChild(streamR);
-        } else if ([...container.children].includes(streamL)) {
-          container.removeChild(streamL);
-        }
+        streamL.id = "streamL";
+        streamL.src = "/video";
         container.appendChild(streamL);
       }
+
     </script>
 </body>
 </html>

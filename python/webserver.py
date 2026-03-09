@@ -4,6 +4,8 @@ import numpy as np
 
 flask_app = Flask(__name__)
 
+
+
 def generate_frames(frames):
     while True:
         frame = frames.get()
@@ -48,5 +50,16 @@ def host_webserver(frames):
     @flask_app.route('/video')
     def video_feed():
         return Response(generate_frames(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+    @flask_app.route('/cam')
+    def cam_alias():
+        # Alias to the processed result stream for compatibility with older clients
+        return Response(generate_frames_res(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
+    
+    @flask_app.rounte('/change_value')
+    def change_value():
+        value = request.args.get('value')
+        id = request.args.get('id')
+        return "done"
 
     flask_app.run(host='0.0.0.0', port=5000)
