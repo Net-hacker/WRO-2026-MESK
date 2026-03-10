@@ -34,34 +34,59 @@
     <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5/dist/iro.min.js"></script>
 </head>
 <body>
+    <h1>Live Kamera Stream</h1>
+    <button id="ResultB" onclick="showResult()">Result</button>
+    <button id="LiveB" onclick="showLive()">Live</button>
     <div class="container">
-      <h1>Live Kamera Stream</h1>
-      <button id="ResultB" onclick="showResult()">Result</button>
-      <button id="LiveB" onclick="showLive()">Live</button>
       <div id="stream"></div>
-      <div id="picker"></div>
-      <p id="output">50</p>
+      <div >
+        <button id="11" onclick="change_border(this.id)">11</button>
+        <button id="12" onclick="change_border(this.id)">12</button>
+        <button id="21" onclick="change_border(this.id)">21</button>
+        <button id="22" onclick="change_border(this.id)">22</button>
+        <div id="picker"></div>
+        <p id="output">50</p>
+      </div>
     </div>
     <script>
       const container = document.getElementById("stream");
       const slider = document.getElementById("slider");
       const output = document.getElementById("output");
       const ColorPicker = new iro.ColorPicker('#picker', { width: 180 });
+      let border = "11";
+      let ignore_event = false;
 
       ColorPicker.on('color:change', function(color) {
+        if (ignore_event) return;
         const h = Math.round(color.hsv.h);
         const s = Math.round(color.hsv.s);
         const v = Math.round(color.hsv.v);
         output.textContent = `${h}, ${s}, ${v}`;
-        fetch(`/change_value?value=${h}, ${s}, ${v}&id=Bsp`)
+        fetch(`/set_value?value=${h}, ${s}, ${v}&id=${border}`)
           .then(response => response.text())
           .then(response => console.log(response))
       });
-      /*slider.addEventListener("input", () => {
-        fetch(`/change_value?value=${colorPicker.hsv}&id=Bsp`)
+
+      function change_border(id) {
+        ignore_event = true;
+        border = id;
+        let colors;
+        fetch(`/get_value?id=${id}`)
           .then(response => response.text())
-          .then(response => console.log(response))
-      }); */
+          .then(response => {
+            console.log(response);
+            colors = response.split(",").map(Number);2
+            console.log(colors);
+            ColorPicker.color.set({ h: colors[0], s: colors[1], v: colors[2] });
+            ignore_event = false;
+            const h = Math.round(ColorPicker.color.hsv.h);
+            const s = Math.round(ColorPicker.color.hsv.s);
+            const v = Math.round(ColorPicker.color.hsv.v);
+            output.textContent = `${h}, ${s}, ${v}`;
+            console.log("Border geändert")
+          }
+        )
+      }
 
       function showResult() {
         const existingR = document.getElementById("streamR");

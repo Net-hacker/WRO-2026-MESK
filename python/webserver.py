@@ -1,26 +1,15 @@
-from flask import Flask, request, jsonify, send_file, Response
+from flask import Flask, request, jsonify, send_file, Response, send_from_directory
 import cv2
 import numpy as np
+import os
 
 flask_app = Flask(__name__)
 
-lower_blue1 = np.array([int(315 / 2), int(255 * 0.6), int(255 * 0.6)], dtype=np.uint8)
-upper_blue1 = np.array([int(360 / 2), 255, 255], dtype=np.uint8)
+lower_blue1 = np.array([int(280 / 2), int(255 * 0.5), int(255 * 0.4)]) #179, 100, 100
+upper_blue1 = np.array([int(360 / 2), 255, 255])
 
-lower_blue2 = np.array([0, 100, 100], dtype=np.uint8)
-upper_blue2 = np.array([15, 255, 255], dtype=np.uint8)
-
-def config_values(id, value):
-    if id.startswith("1"):
-        if id == "11":
-            print(id)
-        if id == 12:
-            print(id)
-    if id.startswith("2"):
-        if id == "21":
-            print(id)
-        if id == "22":
-            print(id)
+lower_blue2 = np.array([0, 100, 100])
+upper_blue2 = np.array([70, 255, 255])
 
 def generate_frames(frames):
     while True:
@@ -30,6 +19,12 @@ def generate_frames(frames):
 
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+
+def pytojshsv(nparray):
+    return np.array([int(nparray[0]*2), int(nparray[1]), int(nparray[2])])
+
+def jstopyhsv(nparray):
+    return np.array([int(nparray[0]/2), int(nparray[1]), int(nparray[2])])
 
 def generate_frames_res(frames):
     while True:
@@ -66,12 +61,52 @@ def host_webserver(frames):
         # Alias to the processed result stream for compatibility with older clients
         return Response(generate_frames_res(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
     
-    @flask_app.route('/change_value')
-    def change_value():
+    @flask_app.route('/set_value')
+    def set_value():
         value = request.args.get('value')
         id = request.args.get('id')
-        print(value)
-        config_values(id, value)
+        numbers = [int(x) for x in value.split(",")]
+        arr = pytojshsv(np.array(numbers))
+        # parse id as int so comparisons are consistent
+        try:
+            id_int = int(id)
+        except Exception:
+            print("Unsupported Id (not int):", id)
+            return "error"
+
+        # modify module-level arrays
+        global lower_blue1, upper_blue1, lower_blue2, upper_blue2
+        if id_int == 11:
+            lower_blue1 = arr
+        elif id_int == 12:
+            upper_blue1 = arr
+        elif id_int == 21:
+            lower_blue2 = arr
+        elif id_int == 22:
+            upper_blue2 = arr
+        else:
+            print("Unsupported Id: ", id_int)
+            return "error"
         return "done"
+
+    @flask_app.route('/get_value')
+    def get_value():
+        id = request.args.get('id')
+        try:
+            id_int = int(id)
+        except Exception:
+            return ",".join(map(str, np.array([0, 0, 0])))
+
+        if id_int == 11:
+            return ",".join(map(str, lower_blue1))
+        elif id_int == 12:
+            return ",".join(map(str, upper_blue1))
+        elif id_int == 21:
+            return ",".join(map(str, lower_blue2))
+        elif id_int == 22:
+            return ",".join(map(str, upper_blue2))
+        else:
+            return ",".join(map(str, np.array([0, 0, 0])))
+
 
     flask_app.run(host='0.0.0.0', port=5000)
