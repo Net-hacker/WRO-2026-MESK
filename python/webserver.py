@@ -6,7 +6,7 @@ import os
 flask_app = Flask(__name__)
 
 lower_blue1 = np.array([int(280 / 2), int(255 * 0.5), int(255 * 0.4)]) #179, 100, 100
-upper_blue1 = np.array([int(360 / 2), 255, 255])
+upper_blue1 = np.array([min(int(360 / 2), 179), 255, 255])
 
 lower_blue2 = np.array([0, 100, 100])
 upper_blue2 = np.array([70, 255, 255])
@@ -21,10 +21,10 @@ def generate_frames(frames):
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
 def pytojshsv(nparray):
-    return np.array([int(nparray[0]*2), int(nparray[1]), int(nparray[2])])
+    return np.array([int(nparray[0]*2), int(nparray[1]/2.55), int(nparray[2]/2.55)])
 
 def jstopyhsv(nparray):
-    return np.array([int(nparray[0]/2), int(nparray[1]), int(nparray[2])])
+    return np.array([int(nparray[0]/2), int(nparray[1]*2.55), int(nparray[2]*2.55)])
 
 def generate_frames_res(frames):
     while True:
@@ -66,7 +66,8 @@ def host_webserver(frames):
         value = request.args.get('value')
         id = request.args.get('id')
         numbers = [int(x) for x in value.split(",")]
-        arr = pytojshsv(np.array(numbers))
+        # convert incoming JS HSV (h:0-360, s/v:0-100) to OpenCV HSV (h:0-179, s/v:0-255)
+        arr = jstopyhsv(np.array(numbers))
         # parse id as int so comparisons are consistent
         try:
             id_int = int(id)
@@ -98,13 +99,17 @@ def host_webserver(frames):
             return ",".join(map(str, np.array([0, 0, 0])))
 
         if id_int == 11:
-            return ",".join(map(str, lower_blue1))
+            ret = pytojshsv(lower_blue1)
+            return ",".join(map(str, ret))
         elif id_int == 12:
-            return ",".join(map(str, upper_blue1))
+            ret = pytojshsv(upper_blue1)
+            return ",".join(map(str, ret))
         elif id_int == 21:
-            return ",".join(map(str, lower_blue2))
+            ret = pytojshsv(lower_blue2)
+            return ",".join(map(str, ret))
         elif id_int == 22:
-            return ",".join(map(str, upper_blue2))
+            ret = pytojshsv(upper_blue2)
+            return ",".join(map(str, ret))
         else:
             return ",".join(map(str, np.array([0, 0, 0])))
 
