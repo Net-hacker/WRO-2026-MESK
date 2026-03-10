@@ -4,7 +4,23 @@ import numpy as np
 
 flask_app = Flask(__name__)
 
+lower_blue1 = np.array([int(315 / 2), int(255 * 0.6), int(255 * 0.6)], dtype=np.uint8)
+upper_blue1 = np.array([int(360 / 2), 255, 255], dtype=np.uint8)
 
+lower_blue2 = np.array([0, 100, 100], dtype=np.uint8)
+upper_blue2 = np.array([15, 255, 255], dtype=np.uint8)
+
+def config_values(id, value):
+    if id.startswith("1"):
+        if id == "11":
+            print(id)
+        if id == 12:
+            print(id)
+    if id.startswith("2"):
+        if id == "21":
+            print(id)
+        if id == "22":
+            print(id)
 
 def generate_frames(frames):
     while True:
@@ -20,12 +36,6 @@ def generate_frames_res(frames):
         frame = frames.get()
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-        lower_blue1 = np.array([int(315 / 2), int(255 * 0.6), int(255 * 0.6)])
-        upper_blue1 = np.array([int(360 / 2), 255, 255])
-
-        lower_blue2 = np.array([0, 100, 100], dtype=np.uint8)
-        upper_blue2 = np.array([15, 255, 255], dtype=np.uint8)
 
         mask1 = cv2.inRange(hsv, lower_blue1, upper_blue1)
         mask2 = cv2.inRange(hsv, lower_blue2, upper_blue2)
@@ -56,10 +66,12 @@ def host_webserver(frames):
         # Alias to the processed result stream for compatibility with older clients
         return Response(generate_frames_res(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
     
-    @flask_app.rounte('/change_value')
+    @flask_app.route('/change_value')
     def change_value():
         value = request.args.get('value')
         id = request.args.get('id')
+        print(value)
+        config_values(id, value)
         return "done"
 
     flask_app.run(host='0.0.0.0', port=5000)

@@ -47,8 +47,8 @@ def run_camera(frames):
                 continue
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-'''
-        lower_blue1 = np.array([int(315 / 2), int(255 * 0.6), int(255 * 0.6)])
+
+        '''lower_blue1 = np.array([int(315 / 2), int(255 * 0.6), int(255 * 0.6)])
         upper_blue1 = np.array([int(360 / 2), 255, 255])
 
         lower_blue2 = np.array([0, 50, 50], dtype=np.uint8)
@@ -57,10 +57,8 @@ def run_camera(frames):
         mask1 = cv2.inRange(hsv, lower_blue1, upper_blue1)
         mask2 = cv2.inRange(hsv, lower_blue2, upper_blue2)
         mask = cv2.bitwise_or(mask1, mask2)
-        res = cv2.bitwise_and(frame, frame, mask=mask)
-'''
+        res = cv2.bitwise_and(frame, frame, mask=mask)'''
+
         if frames.full():
             frames.get()  # ältesten Frame verwerfen
         frames.put(frame)
-
-def config_values(values):
