@@ -1,34 +1,26 @@
 print("Debug: cam.py wurde geöffnet")
-mode = True
 import sys
 import time
-try:
-    import libcamera
-    from picamera2 import Picamera2
-except ImportError:
-    print("Modus von Raspberry Pi zu Laptiop gewechselt, da libcamera oder picamera2 nicht installiert ist.")
-    mode = False
 import cv2
 import numpy as np
-
+import config
 
 
 def run_camera(frames):
     print("Starte Kamera")
 
-    if mode == False:
+    if config.mode == False:
         cam = cv2.VideoCapture(0)
         if not cam.isOpened():
             print("Kamera konnte nicht geoeffnet werden! (VideoCapture ist nicht geöffnet)")
             return
-
     else:
         picam2 = Picamera2()
         picam2.start()
         print("Kamera erfolgreich gestartet")
 
     while True:
-        if mode == False:
+        if config.mode == False:
             ret, frame = cam.read()
             if not ret or frame is None:
                 print("Kamera liefert kein Frame, warte kurz...")

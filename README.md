@@ -8,3 +8,7 @@ https://www.worldrobotolympiad.de/
 
 Username: wro-user
 Password: WRO123!
+
+## WICHTIG ZUM DEVELOPEN
+
+Bidde, beim venv erstellen mit der Flag ``` --system-site-packages ```
