@@ -11,6 +11,9 @@ upper_blue1 = np.array([min(int(360 / 2), 179), 255, 255])
 lower_blue2 = np.array([0, 100, 100])
 upper_blue2 = np.array([70, 255, 255])
 
+lower_blue3 = np.array([0, 100, 100])
+upper_blue3 = np.array([70, 255, 255])
+
 def generate_frames(frames):
     while True:
         frame = frames.get()
@@ -34,7 +37,9 @@ def generate_frames_res(frames):
 
         mask1 = cv2.inRange(hsv, lower_blue1, upper_blue1)
         mask2 = cv2.inRange(hsv, lower_blue2, upper_blue2)
+        mask3 = cv2.inRange(hsv, lower_blue3, upper_blue3)
         mask = cv2.bitwise_or(mask1, mask2)
+        mask = cv2.bitwise_or(mask, mask3)
         res = cv2.bitwise_and(frame, frame, mask=mask)
 
         _, buffer = cv2.imencode('.jpg', res)
@@ -85,6 +90,10 @@ def host_webserver(frames):
             lower_blue2 = arr
         elif id_int == 22:
             upper_blue2 = arr
+        elif id_int == 31:
+            lower_blue3 = arr
+        elif id_int == 32:
+            upper_blue3 = arr
         else:
             print("Unsupported Id: ", id_int)
             return "error"
@@ -109,6 +118,11 @@ def host_webserver(frames):
             return ",".join(map(str, ret))
         elif id_int == 22:
             ret = pytojshsv(upper_blue2)
+        elif id_int == 31:
+            ret = pytojshsv(lower_blue3)
+            return ",".join(map(str, ret))
+        elif id_int == 32:
+            ret = pytojshsv(upper_blue3)
             return ",".join(map(str, ret))
         else:
             return ",".join(map(str, np.array([0, 0, 0])))
