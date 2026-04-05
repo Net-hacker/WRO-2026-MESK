@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file, Response, send_from_directory
+from flask import Flask, request, jsonify, render_template, Response, send_from_directory
 import cv2
 import numpy as np
 import os
@@ -51,7 +51,7 @@ def generate_frames_res(frames):
 def host_webserver(frames):
     @flask_app.route('/')
     def index():
-        return send_file('index.html')
+        return render_template("index.html")
 
     @flask_app.route('/video_res')
     def video_feed_res():
@@ -65,7 +65,7 @@ def host_webserver(frames):
     def cam_alias():
         # Alias to the processed result stream for compatibility with older clients
         return Response(generate_frames_res(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
-    
+
     @flask_app.route('/set_value')
     def set_value():
         value = request.args.get('value')
