@@ -15,6 +15,7 @@ def run_camera(frames):
             print("Kamera konnte nicht geoeffnet werden! (VideoCapture ist nicht geöffnet)")
             return
     else:
+        from picamera2 import Picamera2
         picam2 = Picamera2()
         picam2.start()
         print("Kamera erfolgreich gestartet")
