@@ -1,1 +1,1 @@
-mode = True
+mode = True # Konfiguration um Systemweite Kameramodus zu haben

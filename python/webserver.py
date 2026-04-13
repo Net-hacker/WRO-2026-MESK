@@ -4,36 +4,46 @@ import numpy as np
 import os
 
 flask_app = Flask(__name__)
-
+# Werte der ersten Maske
 lower_blue1 = np.array([int(280 / 2), int(255 * 0.5), int(255 * 0.4)]) #179, 100, 100
-upper_blue1 = np.array([min(int(360 / 2), 179), 255, 255])
-
+upper_blue1 = np.array([min(int(360 / 2), 179), 255, 255]) 
+# Werte der zweiten Maske
 lower_blue2 = np.array([0, 100, 100])
 upper_blue2 = np.array([70, 255, 255])
-
+# Werte der dritten Maske
 lower_blue3 = np.array([0, 100, 100])
 upper_blue3 = np.array([70, 255, 255])
 
 def generate_frames(frames):
     while True:
-        frame = frames.get()
-        _, buffer = cv2.imencode('.jpg', frame)
-        frame_bytes = buffer.tobytes()
+        frame = frames.get() # Holt den nächsten Frame aus der Queue frames und speichert ihn in der Variable frame.
+        hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        # H-Kanal verdoppeln (mit Modulo 180, da H im Bereich [0, 179] liegt)
+        hsv_frame[:, :, 0] = (hsv_frame[:, :, 0] * 2) % 180
+
+        # S- und V-Kanal durch 2.55 teilen (und auf 0-255 begrenzen)
+        hsv_frame[:, :, 1] = np.clip(hsv_frame[:, :, 1] / 2.55, 0, 255)
+        hsv_frame[:, :, 2] = np.clip(hsv_frame[:, :, 2] / 2.55, 0, 255)
+
+        # Zurück in BGR konvertieren (falls nötig)
+        transformed_frame = cv2.cvtColor(hsv_frame.astype(np.uint8), cv2.COLOR_HSV2BGR)
+        _, buffer = cv2.imencode('.jpg', transformed_frame) # Kodiert den Frame als .jpg-Datei. Rückgae: Erfolg, Datei => _, buffer
+        frame_bytes = buffer.tobytes()  # Variable frame_bytes enhält die bytes des Frames in einer .jpg Datei
 
         yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n') # Gibt den Frame als Teil eines MJPEG-Streams zurück.
 
-def pytojshsv(nparray):
+def pytojshsv(nparray): # Konvertiert ein cv2-Array eines Bildes in colorpicker-Array für js
     return np.array([int(nparray[0]*2), int(nparray[1]/2.55), int(nparray[2]/2.55)])
 
-def jstopyhsv(nparray):
+def jstopyhsv(nparray): # Konvertiert ein colorpicker-Array für js eines Bildes in cv2-Array
     return np.array([int(nparray[0]/2), int(nparray[1]*2.55), int(nparray[2]*2.55)])
 
-def generate_frames_res(frames):
+def generate_frames_res(frames): # Generiert frames für js
     while True:
-        frame = frames.get()
+        frame = frames.get() # Holt den nächsten Frame aus der Queue frames und speichert ihn in der Variable frame.
 
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #
 
         mask1 = cv2.inRange(hsv, lower_blue1, upper_blue1)
         mask2 = cv2.inRange(hsv, lower_blue2, upper_blue2)

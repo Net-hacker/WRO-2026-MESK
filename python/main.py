@@ -10,6 +10,6 @@ except ImportError:
     print("Modus von Raspberry Pi zu Laptiop gewechselt, da libcamera oder picamera2 nicht installiert ist.")
     config.mode = False
 
-frames = Queue(maxsize=5)
-threading.Thread(target=host_webserver, args = (frames,)).start()
-threading.Thread(target=cam.run_camera, args = (frames,)).start()
+frames = Queue(maxsize=5) # Neuen Queue erstellen in welchen die letzten 5 Frames gespeichert werden
+threading.Thread(target=host_webserver, args = (frames,)).start() # Neuen Thread für Webserver starten
+threading.Thread(target=cam.run_camera, args = (frames,)).start() # Neuen Thread für Kamera starten
