@@ -12,3 +12,5 @@ Password: WRO123!
 ## WICHTIG ZUM DEVELOPEN
 
 Bidde, beim venv erstellen mit der Flag ``` --system-site-packages ```
+
+Vor installieren der Packages: ``` pip install --upgrade matplotlib pandas-stubs Flask-SQLAlchemy ```
