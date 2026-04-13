@@ -4,7 +4,6 @@ import cv2
 import numpy as np
 import config
 
-
 def run_camera(frames):
     print("Starte Kamera")
 
@@ -14,6 +13,7 @@ def run_camera(frames):
             print("Kamera konnte nicht geoeffnet werden! (VideoCapture ist nicht geöffnet)")
             return
     else:
+        from picamera2 import Picamera2
         picam2 = Picamera2()
         picam2.start() # Starte Kamera mit picam2
         print("Kamera erfolgreich gestartet")

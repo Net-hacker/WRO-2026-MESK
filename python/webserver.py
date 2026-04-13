@@ -14,19 +14,22 @@ upper_blue2 = np.array([70, 255, 255])
 lower_blue3 = np.array([0, 100, 100])
 upper_blue3 = np.array([70, 255, 255])
 
+def manipulate_pixels(hsv_frame):
+    # H-Kanal verdoppeln (OpenCV: 0-179 → iro: 0-358)
+    hsv_frame[:, :, 0] = (hsv_frame[:, :, 0] * 2)
+
+    # S- und V-Kanal auf 0-100 skalieren (und clippen)
+    hsv_frame[:, :, 1] = np.clip(hsv_frame[:, :, 1] / 2.55, 0, 100)
+    hsv_frame[:, :, 2] = np.clip(hsv_frame[:, :, 2] / 2.55, 0, 100)
+
+    # Datentyp anpassen (iro.ColorPicker erwartet Zahlen, kein uint8 nötig)
+    return hsv_frame.astype(np.float32)  # oder einfach hsv_frame, je nach Bedarf
+
 def generate_frames(frames):
     while True:
         frame = frames.get() # Holt den nächsten Frame aus der Queue frames und speichert ihn in der Variable frame.
         hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        # H-Kanal verdoppeln (mit Modulo 180, da H im Bereich [0, 179] liegt)
-        hsv_frame[:, :, 0] = (hsv_frame[:, :, 0] * 2) % 180
-
-        # S- und V-Kanal durch 2.55 teilen (und auf 0-255 begrenzen)
-        hsv_frame[:, :, 1] = np.clip(hsv_frame[:, :, 1] / 2.55, 0, 255)
-        hsv_frame[:, :, 2] = np.clip(hsv_frame[:, :, 2] / 2.55, 0, 255)
-
-        # Zurück in BGR konvertieren (falls nötig)
-        transformed_frame = cv2.cvtColor(hsv_frame.astype(np.uint8), cv2.COLOR_HSV2BGR)
+        transformed_frame = manipulate_pixels(hsv_frame)
         _, buffer = cv2.imencode('.jpg', transformed_frame) # Kodiert den Frame als .jpg-Datei. Rückgae: Erfolg, Datei => _, buffer
         frame_bytes = buffer.tobytes()  # Variable frame_bytes enhält die bytes des Frames in einer .jpg Datei
 
@@ -44,7 +47,7 @@ def generate_frames_res(frames): # Generiert frames für js
         frame = frames.get() # Holt den nächsten Frame aus der Queue frames und speichert ihn in der Variable frame.
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #
-
+        hsv = manipulate_pixels(hsv)
         mask1 = cv2.inRange(hsv, lower_blue1, upper_blue1)
         mask2 = cv2.inRange(hsv, lower_blue2, upper_blue2)
         mask3 = cv2.inRange(hsv, lower_blue3, upper_blue3)
