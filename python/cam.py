@@ -37,7 +37,7 @@ def run_camera(frames):
                 time.sleep(0.5)
                 continue
 
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
         '''lower_blue1 = np.array([int(315 / 2), int(255 * 0.6), int(255 * 0.6)])
         upper_blue1 = np.array([int(360 / 2), 255, 255])
