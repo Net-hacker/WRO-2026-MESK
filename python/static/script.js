@@ -85,18 +85,6 @@ ColorPicker2.on('color:change', function(color) {
     .then(response => console.log(response))
 });
 
-ColorPicker2.on('color:change', function(color) {
-  if (ignore_event) return;
-  const h = Math.round(color.hsv.h);
-  const s = Math.round(color.hsv.s);
-  const v = Math.round(color.hsv.v);
-  output.textContent = `${h}, ${s}, ${v}`;
-  const border = Mask + "2";
-  fetch(`/set_value?value=${h}, ${s}, ${v}&id=${border}`)
-    .then(response => response.text())
-    .then(response => console.log(response))
-});
-
 function change_border(id) {
   ignore_event = true;
   Mask = id;
@@ -108,7 +96,6 @@ function change_border(id) {
       colors = response.split(",").map(Number);
       console.log(colors);
       ColorPicker.color.set({ h: colors[0], s: colors[1], v: colors[2] });
-      ignore_event = false;
       const h = Math.round(ColorPicker.color.hsv.h);
       const s = Math.round(ColorPicker.color.hsv.s);
       const v = Math.round(ColorPicker.color.hsv.v);
@@ -124,9 +111,9 @@ function change_border(id) {
       console.log(colors);
       ColorPicker2.color.set({ h: colors[0], s: colors[1], v: colors[2] });
       ignore_event = false;
-      const h = Math.round(ColorPicker.color.hsv.h);
-      const s = Math.round(ColorPicker.color.hsv.s);
-      const v = Math.round(ColorPicker.color.hsv.v);
+      const h = Math.round(ColorPicker2.color.hsv.h);
+      const s = Math.round(ColorPicker2.color.hsv.s);
+      const v = Math.round(ColorPicker2.color.hsv.v);
       output.textContent = `${h}, ${s}, ${v}`;
       console.log("Border geändert")
     }
@@ -160,3 +147,5 @@ function showLive() {
 // Für die onlick Events
 document.getElementById("ResultB").addEventListener("click", showResult);
 document.getElementById("LiveB").addEventListener("click", showLive);
+
+window.change_border = change_border;
