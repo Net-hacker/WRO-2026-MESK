@@ -5,32 +5,21 @@ import os
 
 flask_app = Flask(__name__)
 # Werte der ersten Maske
-lower_blue1 = np.array([int(280 / 2), int(255 * 0.5), int(255 * 0.4)]) #179, 100, 100
-upper_blue1 = np.array([min(int(360 / 2), 179), 255, 255]) 
+lower_blue1 = np.array([0, 0, 0]) #179, 100, 100
+upper_blue1 = np.array([0, 0, 0]) 
 # Werte der zweiten Maske
-lower_blue2 = np.array([0, 100, 100])
-upper_blue2 = np.array([70, 255, 255])
+lower_blue2 = np.array([0, 0, 0])
+upper_blue2 = np.array([0, 0, 0])
 # Werte der dritten Maske
-lower_blue3 = np.array([0, 100, 100])
-upper_blue3 = np.array([70, 255, 255])
+lower_blue3 = np.array([0, 0, 0])
+upper_blue3 = np.array([0, 0, 0])
 
-def manipulate_pixels(hsv_frame):
-    # H-Kanal verdoppeln (OpenCV: 0-179 → iro: 0-358)
-    hsv_frame[:, :, 0] = (hsv_frame[:, :, 0] * 2)
-
-    # S- und V-Kanal auf 0-100 skalieren (und clippen)
-    hsv_frame[:, :, 1] = np.clip(hsv_frame[:, :, 1] / 2.55, 0, 100)
-    hsv_frame[:, :, 2] = np.clip(hsv_frame[:, :, 2] / 2.55, 0, 100)
-
-    # Datentyp anpassen (iro.ColorPicker erwartet Zahlen, kein uint8 nötig)
-    return hsv_frame.astype(np.float32)  # oder einfach hsv_frame, je nach Bedarf
 
 def generate_frames(frames):
     while True:
         frame = frames.get() # Holt den nächsten Frame aus der Queue frames und speichert ihn in der Variable frame.
-        hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        transformed_frame = manipulate_pixels(hsv_frame)
-        _, buffer = cv2.imencode('.jpg', transformed_frame) # Kodiert den Frame als .jpg-Datei. Rückgae: Erfolg, Datei => _, buffer
+        # hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        _, buffer = cv2.imencode('.jpg', frame) # Kodiert den Frame als .jpg-Datei. Rückgae: Erfolg, Datei => _, buffer
         frame_bytes = buffer.tobytes()  # Variable frame_bytes enhält die bytes des Frames in einer .jpg Datei
 
         yield (b'--frame\r\n'
@@ -47,7 +36,6 @@ def generate_frames_res(frames): # Generiert frames für js
         frame = frames.get() # Holt den nächsten Frame aus der Queue frames und speichert ihn in der Variable frame.
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) #
-        hsv = manipulate_pixels(hsv)
         mask1 = cv2.inRange(hsv, lower_blue1, upper_blue1)
         mask2 = cv2.inRange(hsv, lower_blue2, upper_blue2)
         mask3 = cv2.inRange(hsv, lower_blue3, upper_blue3)
@@ -59,7 +47,6 @@ def generate_frames_res(frames): # Generiert frames für js
         frame_bytes = buffer.tobytes()
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-
 
 def host_webserver(frames):
     @flask_app.route('/')
