@@ -14,3 +14,6 @@ Password: WRO123!
 Bidde, beim venv erstellen mit der Flag ``` --system-site-packages ```
 
 Vor installieren der Packages: ``` pip install --upgrade matplotlib pandas-stubs Flask-SQLAlchemy ```
+
+Tailscale IP:
+100.86.245.113
