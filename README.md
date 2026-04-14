@@ -1,10 +1,15 @@
-# WRO-2026-MESK
+## WRO-2026-MESK
 
 Das ist das Repository auf welchem der Code für unser Roboter gelagert ist. Wir nehmen mit unserem Roboter nimmt an der WRO 2026 teil.
 
 https://www.worldrobotolympiad.de/
 
-# Raspberry-Pi
+https://www.worldrobotolympiad.de/saison-2026/aufgaben/future-engineers
+
+https://www.worldrobotolympiad.de/website/docs/wro2026/WRO2026-FE-Regelwerk.pdf
+
+
+## Raspberry-Pi
 
 Username: wro-user
 Password: WRO123!
