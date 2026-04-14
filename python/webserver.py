@@ -66,66 +66,55 @@ def host_webserver(frames):
         # Alias to the processed result stream for compatibility with older clients
         return Response(generate_frames_res(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    @flask_app.route('/set_value')
+    @flask_app.route('/set_value', methods=["POST"])
     def set_value():
-        value = request.args.get('value')
-        id = request.args.get('id')
-        numbers = [int(x) for x in value.split(",")]
-        # convert incoming JS HSV (h:0-360, s/v:0-100) to OpenCV HSV (h:0-179, s/v:0-255)
-        arr = jstopyhsv(np.array(numbers))
-        # parse id as int so comparisons are consistent
-        try:
-            id_int = int(id)
-        except Exception:
-            print("Unsupported Id (not int):", id)
-            return "error"
+        data = request.get_json()
+        id = str(data.get("ID")) + str(data.get("CID"))
+        h = data.get("H")
+        s = data.get("S")
+        v = data.get("V")
 
-        # modify module-level arrays
-        global lower_blue1, upper_blue1, lower_blue2, upper_blue2
-        if id_int == 11:
-            lower_blue1 = arr
-        elif id_int == 12:
-            upper_blue1 = arr
-        elif id_int == 21:
-            lower_blue2 = arr
-        elif id_int == 22:
-            upper_blue2 = arr
-        elif id_int == 31:
-            lower_blue3 = arr
-        elif id_int == 32:
-            upper_blue3 = arr
-        else:
-            print("Unsupported Id: ", id_int)
-            return "error"
+        arr = jstopyhsv(np.array([h, s, v]))
+
+        global lower_blue1, upper_blue1, lower_blue2, upper_blue2, lower_blue3, upper_blue3
+        match id:
+            case "11":
+                lower_blue1 = arr
+            case "12":
+                upper_blue1 = arr
+            case "21":
+                lower_blue2 = arr
+            case "22":
+                upper_blue2 = arr
+            case "31":
+                lower_blue3 = arr
+            case "32":
+                upper_blue3 = arr
+            case _:
+                print("ERROR!")
+                return "error"
+
         return "done"
 
     @flask_app.route('/get_value')
     def get_value():
         id = request.args.get('id')
-        try:
-            id_int = int(id)
-        except Exception:
-            return ",".join(map(str, np.array([0, 0, 0])))
 
-        if id_int == 11:
-            ret = pytojshsv(lower_blue1)
-            return ",".join(map(str, ret))
-        elif id_int == 12:
-            ret = pytojshsv(upper_blue1)
-            return ",".join(map(str, ret))
-        elif id_int == 21:
-            ret = pytojshsv(lower_blue2)
-            return ",".join(map(str, ret))
-        elif id_int == 22:
-            ret = pytojshsv(upper_blue2)
-        elif id_int == 31:
-            ret = pytojshsv(lower_blue3)
-            return ",".join(map(str, ret))
-        elif id_int == 32:
-            ret = pytojshsv(upper_blue3)
-            return ",".join(map(str, ret))
-        else:
-            return ",".join(map(str, np.array([0, 0, 0])))
+        match int(id):
+            case 1:
+                arr1 = pytojshsv(lower_blue1)
+                arr2 = pytojshsv(upper_blue1)
+            case 2:
+                arr1 = pytojshsv(lower_blue2)
+                arr2 = pytojshsv(upper_blue2)
+            case 3:
+                arr1 = pytojshsv(lower_blue3)
+                arr2 = pytojshsv(upper_blue3)
+            case _:
+                print("ERROR!")
+                return
+
+        return jsonify({"UP": arr1.tolist(), "LOW": arr2.tolist()})
 
     @flask_app.route('/save', methods=["POST"])
     def savePreset():
@@ -176,9 +165,7 @@ def host_webserver(frames):
         upper = np.array(werte[3:])
 
         arr1 = pytojshsv(upper)
-        Uh, Us, Uv = arr1[0], arr1[1], arr1[2]
         arr2 = pytojshsv(lower)
-        Lh, Ls, Lv = arr2[0], arr2[1], arr2[2]
 
         return jsonify({"UP": arr1.tolist(), "LOW": arr2.tolist()}), 200
 

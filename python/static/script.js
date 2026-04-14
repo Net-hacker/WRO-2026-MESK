@@ -67,10 +67,22 @@ ColorPicker.on('color:change', function(color) {
   const s = Math.round(color.hsv.s);
   const v = Math.round(color.hsv.v);
   output.textContent = `${h}, ${s}, ${v}`;
-  const border = Mask + "1";
-  fetch(`/set_value?value=${h}, ${s}, ${v}&id=${border}`)
-    .then(response => response.text())
-    .then(response => console.log(response))
+  const id = Mask;
+  fetch("/set_value", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ID: id,
+      CID: "1",
+      H: h,
+      S: s,
+      V: v
+    })
+  })
+  .then(response => response.text())
+  .then(response => console.log(response))
 });
 
 ColorPicker2.on('color:change', function(color) {
@@ -79,45 +91,39 @@ ColorPicker2.on('color:change', function(color) {
   const s = Math.round(color.hsv.s);
   const v = Math.round(color.hsv.v);
   output.textContent = `${h}, ${s}, ${v}`;
-  const border = Mask + "2";
-  fetch(`/set_value?value=${h}, ${s}, ${v}&id=${border}`)
-    .then(response => response.text())
-    .then(response => console.log(response))
+  const id = Mask;
+  fetch("/set_value", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ID: id,
+      CID: "2",
+      H: h,
+      S: s,
+      V: v
+    })
+  })
+  .then(response => response.text())
+  .then(response => console.log(response))
 });
 
 function change_border(id) {
   ignore_event = true;
-  Mask = id;
-  let colors;
-  fetch(`/get_value?id=${id + "1"}`)
-    .then(response => response.text())
-      .then(response => {
-      console.log(response);
-      colors = response.split(",").map(Number);
-      console.log(colors);
-      ColorPicker.color.set({ h: colors[0], s: colors[1], v: colors[2] });
-      const h = Math.round(ColorPicker.color.hsv.h);
-      const s = Math.round(ColorPicker.color.hsv.s);
-      const v = Math.round(ColorPicker.color.hsv.v);
-      output.textContent = `${h}, ${s}, ${v}`;
-      console.log("Border geändert")
-    }
-  )
-  fetch(`/get_value?id=${id + "2"}`)
-    .then(response => response.text())
-      .then(response => {
-      console.log(response);
-      colors = response.split(",").map(Number);
-      console.log(colors);
-      ColorPicker2.color.set({ h: colors[0], s: colors[1], v: colors[2] });
-      ignore_event = false;
-      const h = Math.round(ColorPicker2.color.hsv.h);
-      const s = Math.round(ColorPicker2.color.hsv.s);
-      const v = Math.round(ColorPicker2.color.hsv.v);
-      output.textContent = `${h}, ${s}, ${v}`;
-      console.log("Border geändert")
-    }
-  )
+  Mask = id
+
+  fetch(`/get_value?id=${id}`)
+  .then(response => response.json())
+  .then(data => {
+    const lower = data.LOW
+    const upper = data.UP
+
+    ColorPicker.color.set({ h: lower[0], s: lower[1], v: lower[2] });
+    ColorPicker2.color.set({ h: upper[0], s: upper[1], v: upper[2] });
+    ignore_event = false
+  })
+  .catch((e) => console.error(e));
 
   // Save Preset
   const presetDiv = document.getElementById("preset");
