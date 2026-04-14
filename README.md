@@ -8,9 +8,6 @@ https://www.worldrobotolympiad.de/saison-2026/aufgaben/future-engineers
 
 https://www.worldrobotolympiad.de/website/docs/wro2026/WRO2026-FE-Regelwerk.pdf
 
-
-#Zu der Dokumentation über den Roboter:
-
 https://lauschti.github.io/MESK-WRO-Doku/
 
 
