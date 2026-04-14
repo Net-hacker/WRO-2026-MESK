@@ -118,6 +118,76 @@ function change_border(id) {
       console.log("Border geändert")
     }
   )
+
+  // Save Preset
+  const presetDiv = document.getElementById("preset");
+  if (!(presetDiv.hasChildNodes())) {
+    // Save Preset Button
+    var presetBtn = document.createElement("button");
+    presetBtn.textContent = "Save Preset";
+    presetBtn.id = id + "_presetBtn";
+    presetBtn.addEventListener("click", function() { savePreset(id); });
+    presetDiv.appendChild(presetBtn);
+    // Load Preset Button
+    var loadBtn = document.createElement("button");
+    loadBtn.textContent = "Load Preset";
+    loadBtn.id = id + "_loadBtn";
+    loadBtn.addEventListener("click", function() { loadPreset(id); });
+    presetDiv.appendChild(loadBtn);
+  } else {
+    // Delete old
+    while (presetDiv.firstChild) {
+      presetDiv.removeChild(presetDiv.firstChild);
+    }
+    // Save Preset Button
+    var presetBtn = document.createElement("button");
+    presetBtn.textContent = "Save Preset";
+    presetBtn.id = id + "_presetBtn";
+    presetBtn.addEventListener("click", function() { savePreset(id); });
+    presetDiv.appendChild(presetBtn);
+    // Load Preset Button
+    var loadBtn = document.createElement("button");
+    loadBtn.textContent = "Load Preset";
+    loadBtn.id = id + "_loadBtn";
+    loadBtn.addEventListener("click", function() { loadPreset(id); });
+    presetDiv.appendChild(loadBtn);
+  }
+}
+
+// Speichert das Preset via fetch / Flask
+function savePreset(id) {
+  fetch("/save", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ID: id
+    })
+  })
+  .then(response => {
+    alert(`Preset ${id} saved!`)
+  })
+  .catch((e) => console.error(e));
+}
+
+// Lädt das Preset via fetch / Flask
+function loadPreset(id) {
+  fetch(`/load?id=${id}`)
+  .then(response => {
+    if (response.status == 404) {
+      throw new Error("404 - Not found")
+    }
+    return response.json()
+  })
+  .then(data => {
+    const lower = data.LOW;
+    const upper = data.UP;
+
+    ColorPicker.color.set({ h: upper[0], s: upper[1], v: upper[2] });
+    ColorPicker2.color.set({ h: lower[0], s: lower[1], v: lower[2] });
+  })
+  .catch((e) => console.error(e));
 }
 
 // Zeigt die Maske (Result)

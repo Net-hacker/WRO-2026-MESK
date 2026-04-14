@@ -6,7 +6,7 @@ import os
 flask_app = Flask(__name__)
 # Werte der ersten Maske
 lower_blue1 = np.array([0, 0, 0]) #179, 100, 100
-upper_blue1 = np.array([0, 0, 0]) 
+upper_blue1 = np.array([0, 0, 0])
 # Werte der zweiten Maske
 lower_blue2 = np.array([0, 0, 0])
 upper_blue2 = np.array([0, 0, 0])
@@ -127,5 +127,59 @@ def host_webserver(frames):
         else:
             return ",".join(map(str, np.array([0, 0, 0])))
 
+    @flask_app.route('/save', methods=["POST"])
+    def savePreset():
+        data = request.get_json()
+        id = data.get("ID")
+
+        try:
+            os.mkdir("Preset")
+        except FileExistsError:
+            print("Directory already exists!")
+
+        match int(id):
+            case 1:
+                Uh, Us, Uv = upper_blue1[0], upper_blue1[1], upper_blue1[2]
+                Lh, Ls, Lv = lower_blue1[0], lower_blue1[1], lower_blue1[2]
+            case 2:
+                Uh, Us, Uv = upper_blue2[0], upper_blue2[1], upper_blue2[2]
+                Lh, Ls, Lv = lower_blue2[0], lower_blue2[1], lower_blue2[2]
+            case 3:
+                Uh, Us, Uv = upper_blue3[0], upper_blue3[1], upper_blue3[2]
+                Lh, Ls, Lv = lower_blue3[0], lower_blue3[1], lower_blue3[2]
+            case _:
+                print("ERROR!")
+
+        with open(f"Preset/{id}_Preset.txt", "w") as file:
+            file.write(f"{Lh}, {Ls}, {Lv}, {Uh}, {Us}, {Uv}")
+            file.close()
+
+        return jsonify({"sucess": True})
+
+    @flask_app.route("/load")
+    def loadPreset():
+        id = request.args.get('id')
+
+        if not os.path.exists("Preset/"):
+            return jsonify({"sucess": False}), 404
+
+        try:
+            with open(f"Preset/{id}_Preset.txt", "r") as file:
+                content = file.read()
+                file.close()
+        except:
+            return jsonify({"sucess": False}), 404
+
+        werte = [int(w.strip()) for w in content.split(",")]
+
+        lower = np.array(werte[:3])
+        upper = np.array(werte[3:])
+
+        arr1 = pytojshsv(upper)
+        Uh, Us, Uv = arr1[0], arr1[1], arr1[2]
+        arr2 = pytojshsv(lower)
+        Lh, Ls, Lv = arr2[0], arr2[1], arr2[2]
+
+        return jsonify({"UP": arr1.tolist(), "LOW": arr2.tolist()}), 200
 
     flask_app.run(host='0.0.0.0', port=5000)

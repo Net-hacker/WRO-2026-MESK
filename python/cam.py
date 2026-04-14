@@ -38,19 +38,7 @@ def run_camera(frames):
                 print("Fehler beim Erfassen mit Picamera2:", e)
                 time.sleep(0.5)
                 continue
-
-        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-
-        '''lower_blue1 = np.array([int(315 / 2), int(255 * 0.6), int(255 * 0.6)])
-        upper_blue1 = np.array([int(360 / 2), 255, 255])
-
-        lower_blue2 = np.array([0, 50, 50], dtype=np.uint8)
-        upper_blue2 = np.array([200, 255, 255], dtype=np.uint8)
-
-        mask1 = cv2.inRange(hsv, lower_blue1, upper_blue1)
-        mask2 = cv2.inRange(hsv, lower_blue2, upper_blue2)
-        mask = cv2.bitwise_or(mask1, mask2)
-        res = cv2.bitwise_and(frame, frame, mask=mask)'''
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
         if frames.full():
             frames.get()  # ältesten Frame verwerfen

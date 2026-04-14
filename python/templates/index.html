@@ -9,17 +9,22 @@
 </head>
 <body>
     <h1>Live Kamera Stream</h1>
-    <button id="ResultB">Result</button>
-    <button id="LiveB">Live</button>
+    <div class="Buttons">
+      <button id="ResultB">Result</button>
+      <button id="LiveB">Live</button>
+    </div>
     <div class="container">
       <div id="stream"></div>
       <div>
-        <button id="1" onclick="change_border(this.id)">1</button>
-        <button id="2" onclick="change_border(this.id)">2</button>
-        <button id="3" onclick="change_border(this.id)">3 (temp)</button>
+        <div class="Filter">
+          <button id="1" onclick="change_border(this.id)">1</button>
+          <button id="2" onclick="change_border(this.id)">2</button>
+          <button id="3" onclick="change_border(this.id)">3</button>
+        </div>
         <div id="picker"></div>
         <div id="picker2"></div>
-        <p id="output">50</p>
+        <p id="output"></p>
+        <div id="preset"></div>
       </div>
     </div>
 </body>
