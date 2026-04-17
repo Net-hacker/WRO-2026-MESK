@@ -1,6 +1,7 @@
 import threading
-from webserver import host_webserver
+import webserver
 import cam
+import steuerung
 from queue import Queue
 import config
 try:
@@ -11,5 +12,7 @@ except ImportError:
     config.mode = False
 
 frames = Queue(maxsize=5) # Neuen Queue erstellen in welchen die letzten 5 Frames gespeichert werden
-threading.Thread(target=host_webserver, args = (frames,)).start() # Neuen Thread für Webserver starten
-threading.Thread(target=cam.run_camera, args = (frames,)).start() # Neuen Thread für Kamera starten
+res_frames = Queue(maxsize=5) # Neuen Queue erstellen in welchem die letzten 5 Maskierten Frames gespeichert werden
+threading.Thread(target=webserver.host_webserver, args = (frames, res_frames)).start() # Neuen Thread für Webserver starten
+threading.Thread(target=cam.run_camera, args = (frames, res_frames)).start() # Neuen Thread für Kamera starten
+# threading.Thread(target=steuerung)

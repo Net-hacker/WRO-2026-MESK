@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import config
 
-def run_camera(frames):
+def run_camera(frames, res_frames):
     print("Starte Kamera")
 
     if config.mode == False: # Wenn das Programm nicht auf dem Pi läuft
@@ -43,3 +43,16 @@ def run_camera(frames):
         if frames.full():
             frames.get()  # ältesten Frame verwerfen
         frames.put(frame)
+        generate_res(res_frames, frame)
+        
+def generate_res(res_frames, frame):
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask1 = cv2.inRange(hsv, config.lower_blue1, config.upper_blue1)
+    mask2 = cv2.inRange(hsv, config.lower_blue2, config.upper_blue2)
+    mask3 = cv2.inRange(hsv, config.lower_blue3, config.upper_blue3)
+    mask = cv2.bitwise_or(mask1, mask2)
+    mask = cv2.bitwise_or(mask, mask3)
+    res = cv2.bitwise_and(frame, frame, mask=mask)
+    if res_frames.full():
+        res_frames.get()
+    res_frames.put(res)
