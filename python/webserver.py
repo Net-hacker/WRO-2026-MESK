@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import os
 import config
+import cam
 
 flask_app = Flask(__name__)
 
@@ -29,6 +30,7 @@ def generate_frames_res(res_frames): # Generiert frames für js
         frame_bytes = buffer.tobytes() # Variable frame_bytes enhält die bytes des Frames in einer .jpg Datei
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n') # Gibt den Frame als Teil eines MJPEG-Streams zurück.
+
 
 def host_webserver(frames, res_frames):
     @flask_app.route('/') 
@@ -58,45 +60,30 @@ def host_webserver(frames, res_frames):
 
         arr = jstopyhsv(np.array([h, s, v]))
 
-        # global lower_blue1, upper_blue1, lower_blue2, upper_blue2, lower_blue3, upper_blue3
-        match id:
-            case "11":
-                config.lower_blue1 = arr
-            case "12":
-                config.upper_blue1 = arr
-            case "21":
-                config.lower_blue2 = arr
-            case "22":
-                config.upper_blue2 = arr
-            case "31":
-                config.lower_blue3 = arr
-            case "32":
-                config.upper_blue3 = arr
-            case _:
-                print("ERROR!")
-                return "error"
-
+        Maske = int(id[0])
+        Border = int(id[1])
+        
+        if len(config.mask_values) >= Maske and len(config.mask_values[Maske - 1]) >= Border:
+            config.mask_values[Maske - 1][Border - 1] = arr
+        else:
+            print("Error while setting value: Id is not valid")
+            return "error"
+        
+        print(config.mask_values)
         return "done"
 
     @flask_app.route('/get_value')
     def get_value():
         id = request.args.get('id')
 
-        match int(id):
-            case 1:
-                arr1 = pytojshsv(config.lower_blue1)
-                arr2 = pytojshsv(config.upper_blue1)
-            case 2:
-                arr1 = pytojshsv(config.lower_blue2)
-                arr2 = pytojshsv(config.upper_blue2)
-            case 3:
-                arr1 = pytojshsv(config.lower_blue3)
-                arr2 = pytojshsv(config.upper_blue3)
-            case _:
-                print("ERROR!")
-                return
+        if len(config.mask_values) >= int(id):
+            arr1 = pytojshsv(config.mask_values[int(id) - 1][0])
+            arr2 = pytojshsv(config.mask_values[int(id) - 1][1])
+        else:
+            print("Error while getting value: ID is not valid")
+            return 400
 
-        return jsonify({"UP": arr1.tolist(), "LOW": arr2.tolist()})
+        return jsonify({"UP": arr2.tolist(), "LOW": arr1.tolist()})
 
     @flask_app.route('/save', methods=["POST"])
     def savePreset():
@@ -108,18 +95,10 @@ def host_webserver(frames, res_frames):
         except FileExistsError:
             print("Directory already exists!")
 
-        match int(id):
-            case 1:
-                Uh, Us, Uv = config.upper_blue1[0], config.upper_blue1[1], config.upper_blue1[2]
-                Lh, Ls, Lv = config.lower_blue1[0], config.lower_blue1[1], config.lower_blue1[2]
-            case 2:
-                Uh, Us, Uv = config.upper_blue2[0], config.upper_blue2[1], config.upper_blue2[2]
-                Lh, Ls, Lv = lower_blue2[0], lower_blue2[1], lower_blue2[2]
-            case 3:
-                Uh, Us, Uv = config.upper_blue3[0], config.upper_blue3[1], config.upper_blue3[2]
-                Lh, Ls, Lv = config.lower_blue3[0], config.lower_blue3[1], config.lower_blue3[2]
-            case _:
-                print("ERROR!")
+        if len(config.mask_values) <= int(id):
+            (Uh, Us, Uv), (Lh, Ls, Lv) = config.mask_values[int(id) - 1]
+        else:
+            print("Error while saving Preset: ID is not valid")
 
         with open(f"Preset/{id}_Preset.txt", "w") as file:
             file.write(f"{Lh}, {Ls}, {Lv}, {Uh}, {Us}, {Uv}")
@@ -131,23 +110,7 @@ def host_webserver(frames, res_frames):
     def loadPreset():
         id = request.args.get('id')
 
-        if not os.path.exists("Preset/"):
-            return jsonify({"sucess": False}), 404
-
-        try:
-            with open(f"Preset/{id}_Preset.txt", "r") as file:
-                content = file.read()
-                file.close()
-        except:
-            return jsonify({"sucess": False}), 404
-
-        werte = [int(w.strip()) for w in content.split(",")]
-
-        lower = np.array(werte[:3])
-        upper = np.array(werte[3:])
-
-        arr1 = pytojshsv(upper)
-        arr2 = pytojshsv(lower)
+        arr1, arr2 = cam.load_preset(id)
 
         return jsonify({"UP": arr1.tolist(), "LOW": arr2.tolist()}), 200
 

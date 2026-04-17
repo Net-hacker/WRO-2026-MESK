@@ -11,3 +11,9 @@ upper_blue2 = np.array([0, 0, 0])
 # Werte der dritten Maske
 lower_blue3 = np.array([0, 0, 0])
 upper_blue3 = np.array([0, 0, 0])
+
+mask_values = [
+    [np.array([0, 0, 0]), np.array([0, 0, 0])],
+    [np.array([0, 0, 0]), np.array([0, 0, 0])],
+    [np.array([0, 0, 0]), np.array([0, 0, 0])]
+]

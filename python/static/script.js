@@ -1,7 +1,7 @@
 import iro from "https://cdn.jsdelivr.net/npm/@jaames/iro@5/+esm";
 import noUiSlider from "https://cdn.jsdelivr.net/npm/nouislider@15.7.0/+esm";
 
-// Hier alles mit Colorpicker
+// Stuff that happens at the begining of the programm
 const container = document.getElementById("stream");
 const slider = document.getElementById("slider");
 const output = document.getElementById("output");
@@ -108,6 +108,9 @@ ColorPicker2.on('color:change', function(color) {
   .then(response => response.text())
   .then(response => console.log(response))
 });
+UpdatePresets(1); //Add Preset Button to document
+
+//Functions
 
 function change_border(id) {
   ignore_event = true;
@@ -125,9 +128,14 @@ function change_border(id) {
   })
   .catch((e) => console.error(e));
 
+  UpdatePresets(id);
+}
+
+function UpdatePresets(id) {
   // Save Preset
   const presetDiv = document.getElementById("preset");
   if (!(presetDiv.hasChildNodes())) {
+
     // Save Preset Button
     var presetBtn = document.createElement("button");
     presetBtn.textContent = "Save Preset";
