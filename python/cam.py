@@ -3,6 +3,7 @@ import time
 import cv2
 import numpy as np
 import config
+import os
 
 def run_camera(frames, res_frames):
     print("Starte Kamera")
@@ -90,7 +91,5 @@ def load_preset(id):
 
     lower = np.array(werte[:3])
     upper = np.array(werte[3:])
-
-    arr1 = pytojshsv(upper)
-    arr2 = pytojshsv(lower)
-    return arr1, arr2
+    
+    return upper, lower

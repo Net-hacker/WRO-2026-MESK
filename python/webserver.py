@@ -95,7 +95,7 @@ def host_webserver(frames, res_frames):
         except FileExistsError:
             print("Directory already exists!")
 
-        if len(config.mask_values) <= int(id):
+        if len(config.mask_values) >= int(id):
             (Uh, Us, Uv), (Lh, Ls, Lv) = config.mask_values[int(id) - 1]
         else:
             print("Error while saving Preset: ID is not valid")
@@ -111,6 +111,8 @@ def host_webserver(frames, res_frames):
         id = request.args.get('id')
 
         arr1, arr2 = cam.load_preset(id)
+        arr1 = pytojshsv(arr1)
+        arr2 = pytojshsv(arr2)
 
         return jsonify({"UP": arr1.tolist(), "LOW": arr2.tolist()}), 200
 
