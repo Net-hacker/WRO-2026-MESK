@@ -68,8 +68,6 @@ def host_webserver(frames, res_frames):
         else:
             print("Error while setting value: Id is not valid")
             return "error"
-        
-        print(config.mask_values)
         return "done"
 
     @flask_app.route('/get_value')
@@ -93,7 +91,7 @@ def host_webserver(frames, res_frames):
         try:
             os.mkdir("Preset")
         except FileExistsError:
-            print("Directory already exists!")
+            pass
 
         if len(config.mask_values) >= int(id):
             (Uh, Us, Uv), (Lh, Ls, Lv) = config.mask_values[int(id) - 1]

@@ -64,8 +64,6 @@ def generate_res(res_frames, frame):
 def Mask_Processing(mask, hsv, number): # Braucht man nicht mehr aber ich find's ne sehr geile funktion und bin stolz drauf, deswegen lass ich sie drin
     if number < len(config.mask_values):
         new_mask = cv2.inRange(hsv, config.mask_values[number][0], config.mask_values[number][1])
-        if not np.array_equal(mask, new_mask):
-            print(f"UNTERSCHIED: {mask}, {new_mask}")
         return Mask_Processing(cv2.bitwise_or(mask, new_mask), hsv, number + 1)
     else:
         return mask

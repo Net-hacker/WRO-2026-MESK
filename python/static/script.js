@@ -82,7 +82,7 @@ ColorPicker.on('color:change', function(color) {
     })
   })
   .then(response => response.text())
-  .then(response => console.log(response))
+  .then(response => {if (response != "done") console.log(response);})
 });
 
 ColorPicker2.on('color:change', function(color) {
@@ -108,7 +108,8 @@ ColorPicker2.on('color:change', function(color) {
   .then(response => response.text())
   .then(response => console.log(response))
 });
-UpdatePresets(1); //Add Preset Button to document
+UpdatePresets(1) //Add Preset Button to document
+change_border(1) //Update slider values
 
 //Functions
 
