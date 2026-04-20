@@ -45,11 +45,6 @@ def host_webserver(frames, res_frames):
     def video_feed():
         return Response(generate_frames(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-    @flask_app.route('/cam')
-    def cam_alias():
-        # Alias to the processed result stream for compatibility with older clients
-        return Response(generate_frames_res(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
-
     @flask_app.route('/set_value', methods=["POST"])
     def set_value():
         data = request.get_json()
