@@ -4,8 +4,6 @@ from servo import steer
 
 import time
 
-
-
 motor("vor", 0.8)
 steer(0.0)
 
