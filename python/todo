@@ -1,1 +1,4 @@
 - Bei JS to python Array Konvertierung Randwerte korrekt übersetzen, damit die Farbe Rot vollständig erkannt wird
+- Bei Webserver neue Funktion mit verarbeitetem Result
+- Bei Webserver nur aus Queue rausholen wenn auch ausgewählt
+- In JavaScript Werte Richtig anzeigen

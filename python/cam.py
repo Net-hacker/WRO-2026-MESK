@@ -21,7 +21,7 @@ def run_camera(frames, res_frames):
         picam2.start() # Starte Kamera mit picam2
         print("Kamera erfolgreich gestartet")
 
-    # LoadPresets()
+    load_presets()
 
     while True:
         if config.mode == False: # Wenn das Programm nicht auf dem Pi läuft
@@ -69,21 +69,24 @@ def Mask_Processing(mask, hsv, number): # Braucht man nicht mehr aber ich find's
         return mask
 
 def load_presets():
-    for x in len(config.mask_values()) - 1:
-        upper, lower = load_preset(x)
+    for x in range(len(config.mask_values)):
+        upper, lower = load_preset(x + 1)
+        if upper is not None and lower is not None:
+            config.mask_values[x] = [upper, lower]
+        print(lower, upper)
     
     
     
 def load_preset(id):
     if not os.path.exists("Preset/"):
-        return jsonify({"sucess": False}), 404
-
+        return None, None
+    
     try:
         with open(f"Preset/{id}_Preset.txt", "r") as file:
             content = file.read()
             file.close()
     except:
-        return jsonify({"sucess": False}), 404
+        return None, None
 
     werte = [int(w.strip()) for w in content.split(",")]
 

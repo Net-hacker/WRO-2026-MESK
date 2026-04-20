@@ -4,6 +4,7 @@ import cam
 import steuerung
 from queue import Queue
 import config
+import time
 try:
     import libcamera
     from picamera2 import Picamera2
@@ -13,6 +14,8 @@ except ImportError:
 
 frames = Queue(maxsize=5) # Neuen Queue erstellen in welchen die letzten 5 Frames gespeichert werden
 res_frames = Queue(maxsize=5) # Neuen Queue erstellen in welchem die letzten 5 Maskierten Frames gespeichert werden
-threading.Thread(target=webserver.host_webserver, args = (frames, res_frames)).start() # Neuen Thread für Webserver starten
+Konturen = Queue(maxsize=5)
+threading.Thread(target=steuerung.toKonturen, args = (res_frames, Konturen)).start()
+threading.Thread(target=webserver.host_webserver, args = (frames, Konturen)).start() # Neuen Thread für Webserver starten
 threading.Thread(target=cam.run_camera, args = (frames, res_frames)).start() # Neuen Thread für Kamera starten
 # threading.Thread(target=steuerung)

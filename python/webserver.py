@@ -109,6 +109,8 @@ def host_webserver(frames, res_frames):
         id = request.args.get('id')
 
         arr1, arr2 = cam.load_preset(id)
+        if arr1 is None:
+            return jsonify({"sucess": False}), 404
         arr1 = pytojshsv(arr1)
         arr2 = pytojshsv(arr2)
 
