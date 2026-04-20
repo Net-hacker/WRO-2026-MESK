@@ -7,16 +7,16 @@ RPWM = PWMOutputDevice(18)
 L_EN = DigitalOutputDevice(23)
 R_EN = DigitalOutputDevice(24)
 
-def motor(richtung, geschwindigkeit):
+def motor(richtung: str, geschwindigkeit: float):
 
     L_EN.on()
     R_EN.on()
 
-    if richtung == "vorwaerts":
+    if richtung == "rueckwaerts":
         LPWM.value = 0
         RPWM.value = geschwindigkeit
 
-    elif richtung == "rueckwaerts":
+    elif richtung == "vorwaerts":
         LPWM.value = geschwindigkeit
         RPWM.value = 0
 
