@@ -130,7 +130,7 @@ def host_webserver(frames, res_frames):
 
     @flask_app.route("/get_tolerance")
     def loadToll():
-        id = request.args.get('id');
+        id = request.args.get('id')
 
         if len(config.tolerance_values) >= int(id):
             tolerance = config.tolerance_values[int(id) - 1]

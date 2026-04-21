@@ -47,7 +47,7 @@ def toKonturen(res_frames, Konturen):
                 if counter is 1:
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 255, 0), thickness=2)
                 else:
-                    result = cv2.polylines(result, [approx], isClosed=True, color=(255, 0, 0), thickness=2)
+                    result = cv2.polylines(result, [approx], isClosed=True, color=(0, 0, 255), thickness=2)
             Ergebnis = cv2.bitwise_or(Ergebnis, result)
         Konturen.put(Ergebnis)
         
