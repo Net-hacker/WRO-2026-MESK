@@ -1,4 +1,5 @@
 # Code zur Steuerung des Fahrt(richtung) anhand der Kamera & den Sensoren
+import time
 import cv2
 import numpy as np
 import y2
@@ -6,6 +7,7 @@ import config
 # Falls man nicht auf dem Raspi runnt
 try:
     import motor
+    import servo
 except ImportError:
     pass
 
@@ -38,7 +40,7 @@ def toKonturen(res_frames, Konturen):
                     print(cv2.arcLength(k, closed=True))
                 approx = cv2.approxPolyDP(k, epsilon, closed=True)
                 ecken = len(approx)
-                Elemente.append((approx, flaeche))
+                Elemente.append((approx, flaeche, counter - 1))
                 if ecken == 3:
                     shape = "Dreieck"
                 elif ecken == 4:
@@ -57,13 +59,26 @@ def toKonturen(res_frames, Konturen):
         Konturen.put(Ergebnis)
         groeste_flaeche = 0
         groester_approx = None
-        for approx, flaeche in Elemente:
+        groeste_maske = ""
+        for approx, flaeche, maske in Elemente:
             if flaeche > groeste_flaeche:
                 groeste_flaeche = flaeche
                 groester_approx = approx
+                groeste_maske = maske
         if groester_approx is None:
             continue
         punkte = groester_approx.reshape(-1, 2)
         mittelpunkt = np.mean(punkte, axis=0) # Mittelpunkt des größen Objektes bestimmen
-        # print(groeste_flaeche)
-        servo.steer(mittelpunkt[0]/2500)
+        # print(mittelpunkt)
+        time.sleep(0.1)
+        if counter == 1: # Grüne = Links
+            ServoMove = -(-mittelpunkt[0]+2500)/2500
+            print("Servo: ", -(-mittelpunkt[0]+2500)/2500)
+        elif counter == 2: # Rote = Rechts
+            ServoMove = -(-mittelpunkt[0]+2500)/2500
+            print("Servo: ", (-mittelpunkt[0]+2500)/2500)
+        else:
+            ServoMove = 0
+            print("Servo: 0")
+
+        servo.steer(ServoMove)
