@@ -116,7 +116,7 @@ UpdateTolerance(1) //Update Toleranzen
 
 tolerance.oninput = function() {
   const id = Mask;
-  const toleranceV = (tolerance.value * 0.01).toFixed(2);
+  const toleranceV = (tolerance.value * 0.0008).toFixed(6);
   toleranceOut.textContent = toleranceV;
 
   fetch("/send_tolerance", {
@@ -159,7 +159,7 @@ function UpdateTolerance(id) {
   .then(response => response.json())
   .then(data => {
     const tolerance = data.TOLL;
-    tolerance.value = tolerance / 0.01;
+    tolerance.value = tolerance / 0.0008;
   })
   .catch((e) => console.error(e));
 }

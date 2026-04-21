@@ -13,7 +13,7 @@ def toKonturen(res_frames, Konturen):
     while True:
         results = res_frames.get()
         Ergebnis = np.zeros_like(results[0])
-        counter = 0
+        counter = -1
         for result in results:
             counter = counter + 1
             grau = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
@@ -31,7 +31,11 @@ def toKonturen(res_frames, Konturen):
                     continue  # Rauschen ignorieren
 
                 # Kontur annähern (epsilon = Toleranz)
-                epsilon = config.tolerance_values[counter] * cv2.arcLength(k, closed=True)
+                try:
+                    epsilon = config.tolerance_values[counter] * cv2.arcLength(k, closed=True)
+                except:
+                    print(config.tolerance_values[counter])
+                    print(cv2.arcLength(k, closed=True))
                 approx = cv2.approxPolyDP(k, epsilon, closed=True)
                 ecken = len(approx)
                 Elemente.append((approx, flaeche))
@@ -55,8 +59,9 @@ def toKonturen(res_frames, Konturen):
 
         groeste_flaeche = 0
         groester_approx = None
-        for i in range(len(Elemente)):
-            approx, flaeche = Elemente[i - 1]
+        #for i in range(len(Elemente)):
+        #    approx, flaeche = Elemente[i - 1]
+        for approx, flaeche in Elemente:
             if flaeche > groeste_flaeche:
                 groeste_flaeche = flaeche
                 groester_approx = approx
@@ -64,3 +69,5 @@ def toKonturen(res_frames, Konturen):
             continue
         punkte = groester_approx.reshape(-1, 2)
         mittelpunkt = np.mean(punkte, axis=0) # Mittelpunkt des größen Objektes bestimmen
+        print(groeste_flaeche)
+        #servo.steer()

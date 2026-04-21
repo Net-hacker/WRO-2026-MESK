@@ -118,7 +118,7 @@ def host_webserver(frames, res_frames):
         tolerance = data.get("TOLL")
 
         if len(config.tolerance_values) >= int(id):
-            config.tolerance_values[int(id) - 1] = tolerance
+            config.tolerance_values[int(id) - 1] = float(tolerance)
         else:
             print("Error while saving Tolerance: ID is not valid")
 

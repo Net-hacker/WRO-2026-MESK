@@ -10,7 +10,7 @@ mask_values = [
 ]
 
 tolerance_values = [
-    [0], [0], [0]
+    0, 0, 0
 ]
 
 def startup():
