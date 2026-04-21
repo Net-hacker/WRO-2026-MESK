@@ -9,13 +9,5 @@ def readsensor():
 
     distli = sensorlinks.distance * 100
     distre = sensorrechts.distance * 100
-
-    if (distli - distre) > 10:
-        return "links"
     
-    elif (distre - distli) > 10: 
-        return "rechts"
-    
-    elif -10 < (distli - distre) < 10:
-        return "mittig"
-    
+    return distli-distre
