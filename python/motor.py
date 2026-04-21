@@ -21,9 +21,9 @@ def motor(richtung: str, geschwindigkeit: float):
         RPWM.value = 0
 
 def bewegung(geschwindigkeit: float):
-    if motor > 0:
+    if geschwindigkeit > 0:
         motor("vorwaerts", geschwindigkeit)
-    elif motor < 0:
+    elif geschwindigkeit < 0:
         motor("rueckwaerts", geschwindigkeit)
     else:
         motor_stop()

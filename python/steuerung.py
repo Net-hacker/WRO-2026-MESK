@@ -1,6 +1,8 @@
 # Code zur Steuerung des Fahrt(richtung) anhand der Kamera & den Sensoren
 import cv2
 import numpy as np
+import motor
+import y2
 
 def toKonturen(res_frames, Konturen):
     while True:
@@ -47,5 +49,4 @@ def toKonturen(res_frames, Konturen):
         if groester_approx is None:
             continue
         punkte = groester_approx.reshape(-1, 2)
-        mittelpunkt = np.mean(punkte, axis=0)
-        print(mittelpunkt[0])
+        mittelpunkt = np.mean(punkte, axis=0) # Mittelpunkt des größen Objektes bestimmen

@@ -9,3 +9,5 @@
 | [ ] | Masken einstellen (Corona) |
 | [ ] | Autonomes Fahren |
 | [ ] | Memory |
+| [ ] | Maskenspezifische Ergebnisse: Der Punkt... Ist von dieser Maske erkannt worden
+ |
