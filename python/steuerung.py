@@ -66,4 +66,4 @@ def toKonturen(res_frames, Konturen):
         punkte = groester_approx.reshape(-1, 2)
         mittelpunkt = np.mean(punkte, axis=0) # Mittelpunkt des größen Objektes bestimmen
         # print(groeste_flaeche)
-        servo.steer(mittelpunkt/2500)
+        servo.steer(mittelpunkt[0]/2500)

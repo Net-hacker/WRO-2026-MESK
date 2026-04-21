@@ -18,10 +18,10 @@ def generate_frames(frames):
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n') # Gibt den Frame als Teil eines MJPEG-Streams zurück.
 
 def pytojshsv(nparray): # Konvertiert ein cv2-Array eines Bildes in colorpicker-Array für js
-    return np.array([int(nparray[0]*2), int(nparray[1]/2.55), int(nparray[2]/2.55)])
+    return np.array([round(nparray[0]*2), int(nparray[1]/2.55), int(nparray[2]/2.55)])
 
 def jstopyhsv(nparray): # Konvertiert ein colorpicker-Array für js eines Bildes in cv2-Array
-    return np.array([int(nparray[0]/2), int(nparray[1]*2.55), int(nparray[2]*2.55)])
+    return np.array([round(nparray[0]/2), int(nparray[1]*2.55), int(nparray[2]*2.55)])
 
 def generate_frames_res(res_frames): # Generiert frames für js
     while True:
