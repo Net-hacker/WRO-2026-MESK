@@ -52,14 +52,15 @@ def generate_res(res_frames, frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = np.zeros_like(hsv[:,:,0])
 
+    results = []
     for lower, upper in config.mask_values:
-        new_mask = cv2.inRange(hsv, lower, upper)
-        mask = cv2.bitwise_or(mask, new_mask)
+        mask = cv2.inRange(hsv, lower, upper)
+        res = cv2.bitwise_and(frame, frame, mask=mask)
+        results.append(res)
     
-    res = cv2.bitwise_and(frame, frame, mask=mask)
     if res_frames.full():
         res_frames.get()
-    res_frames.put(res)
+    res_frames.put(results)
     
 def Mask_Processing(mask, hsv, number): # Braucht man nicht mehr aber ich find's ne sehr geile funktion und bin stolz drauf, deswegen lass ich sie drin
     if number < len(config.mask_values):
