@@ -120,12 +120,15 @@ h1 {
 }
 
 /* Output text */
-.class p {
+.text {
   margin-top: 10px;
   padding: 8px 12px;
   background: #0f1115;
   border: 1px solid #2a3246;
   border-radius: 10px;
+}
+
+.text p {
   text-align: center;
   font-family: monospace;
 }

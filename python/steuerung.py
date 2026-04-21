@@ -1,8 +1,12 @@
 # Code zur Steuerung des Fahrt(richtung) anhand der Kamera & den Sensoren
 import cv2
 import numpy as np
-import motor
 import y2
+# Falls man nicht auf dem Raspi runnt
+try:
+    import motor
+except ImportError:
+    pass
 
 def toKonturen(res_frames, Konturen):
     while True:
@@ -20,7 +24,7 @@ def toKonturen(res_frames, Konturen):
             flaeche = cv2.contourArea(k)
             if flaeche < 20000:
                 continue  # Rauschen ignorieren
-           
+
 
             # Kontur annähern (epsilon = Toleranz)
             epsilon = 0.04 * cv2.arcLength(k, closed=True)
@@ -38,7 +42,7 @@ def toKonturen(res_frames, Konturen):
             # print(f"{shape}, Fläche: {flaeche:.0f}px²")
             result = cv2.polylines(result, [approx], isClosed=True, color=(0, 255, 0), thickness=2)
         Konturen.put(result)
-        
+
         groeste_flaeche = 0
         groester_approx = None
         for i in range(len(Elemente)):

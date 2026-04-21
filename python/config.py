@@ -7,3 +7,7 @@ mask_values = [
     [np.array([0, 0, 0]), np.array([0, 0, 0])],
     [np.array([0, 0, 0]), np.array([0, 0, 0])]
 ]
+
+tolerance_values = [
+    [0], [0], [0]
+]

@@ -112,10 +112,11 @@ ColorPicker2.on('color:change', function(color) {
 });
 UpdatePresets(1) //Add Preset Button to document
 change_border(1) //Update slider values
+UpdateTolerance(1) //Update Toleranzen
 
 tolerance.oninput = function() {
   const id = Mask;
-  const toleranceV = tolerance.value * 0.01;
+  const toleranceV = (tolerance.value * 0.01).toFixed(2);
   toleranceOut.textContent = toleranceV;
 
   fetch("/send_tolerance", {
@@ -136,21 +137,31 @@ tolerance.oninput = function() {
 
 function change_border(id) {
   ignore_event = true;
-  Mask = id
+  Mask = id;
 
   fetch(`/get_value?id=${id}`)
   .then(response => response.json())
   .then(data => {
-    const lower = data.LOW
-    const upper = data.UP
+    const lower = data.LOW;
+    const upper = data.UP;
 
     ColorPicker.color.set({ h: lower[0], s: lower[1], v: lower[2] });
     ColorPicker2.color.set({ h: upper[0], s: upper[1], v: upper[2] });
-    ignore_event = false
+    ignore_event = false;
   })
   .catch((e) => console.error(e));
 
   UpdatePresets(id);
+}
+
+function UpdateTolerance(id) {
+  fetch(`/get_tolerance?id=${id}`)
+  .then(response => response.json())
+  .then(data => {
+    const tolerance = data.TOLL;
+    tolerance.value = tolerance / 0.01;
+  })
+  .catch((e) => console.error(e));
 }
 
 function UpdatePresets(id) {

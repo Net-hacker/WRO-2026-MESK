@@ -117,6 +117,27 @@ def host_webserver(frames, res_frames):
         id = data.get("ID")
         tolerance = data.get("TOLL")
 
+        if len(config.tolerance_values) >= int(id):
+            config.tolerance_values[int(id) - 1] = tolerance
+        else:
+            print("Error while saving Tolerance: ID is not valid")
+
+        with open(f"Preset/{id}_Tolerance.txt", "w") as file:
+            file.write(f"{float(tolerance)}")
+            file.close()
+
         return jsonify({"sucess": True})
+
+    @flask_app.route("/get_tolerance")
+    def loadToll():
+        id = request.args.get('id');
+
+        if len(config.tolerance_values) >= int(id):
+            tolerance = config.tolerance_values[int(id) - 1]
+        else:
+            print("Error while getting value: ID is not valid")
+            return 400
+
+        return jsonify({"TOLL": tolerance}), 200
 
     flask_app.run(host='0.0.0.0', port=5000)
