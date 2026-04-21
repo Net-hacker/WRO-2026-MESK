@@ -5,6 +5,8 @@ import noUiSlider from "https://cdn.jsdelivr.net/npm/nouislider@15.7.0/+esm";
 const container = document.getElementById("stream");
 const slider = document.getElementById("slider");
 const output = document.getElementById("output");
+const tolerance = document.getElementById("toleranceR");
+const toleranceOut = document.getElementById("toleranceV");
 var ColorPicker = new iro.ColorPicker("#picker", {
   width: 250,
   color: "rgb(255, 0, 0)",
@@ -110,6 +112,25 @@ ColorPicker2.on('color:change', function(color) {
 });
 UpdatePresets(1) //Add Preset Button to document
 change_border(1) //Update slider values
+
+tolerance.oninput = function() {
+  const id = Mask;
+  const toleranceV = tolerance.value * 0.01;
+  toleranceOut.textContent = toleranceV;
+
+  fetch("/send_tolerance", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ID: id,
+      TOLL: toleranceV
+    })
+  })
+  .then(response => response.text())
+  .then(response => console.log(response))
+};
 
 //Functions
 

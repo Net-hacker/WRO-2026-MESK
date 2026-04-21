@@ -33,13 +33,13 @@ def generate_frames_res(res_frames): # Generiert frames für js
 
 
 def host_webserver(frames, res_frames):
-    @flask_app.route('/') 
-    def index(): 
+    @flask_app.route('/')
+    def index():
         return render_template("index.html")
 
     @flask_app.route('/video_res')
     def video_feed_res():
-        return Response(generate_frames_res(res_frames), mimetype='multipart/x-mixed-replace; boundary=frame') 
+        return Response(generate_frames_res(res_frames), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     @flask_app.route('/video')
     def video_feed():
@@ -57,7 +57,7 @@ def host_webserver(frames, res_frames):
 
         Maske = int(id[0])
         Border = int(id[1])
-        
+
         if len(config.mask_values) >= Maske and len(config.mask_values[Maske - 1]) >= Border:
             config.mask_values[Maske - 1][Border - 1] = arr
         else:
@@ -110,5 +110,13 @@ def host_webserver(frames, res_frames):
         arr2 = pytojshsv(arr2)
 
         return jsonify({"UP": arr1.tolist(), "LOW": arr2.tolist()}), 200
+
+    @flask_app.route("/send_tolerance", methods=["POST"])
+    def tolerancer():
+        data = request.get_json()
+        id = data.get("ID")
+        tolerance = data.get("TOLL")
+
+        return jsonify({"sucess": True})
 
     flask_app.run(host='0.0.0.0', port=5000)

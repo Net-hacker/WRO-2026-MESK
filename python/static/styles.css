@@ -120,14 +120,14 @@ h1 {
 }
 
 /* Output text */
-#output {
+.class p {
   margin-top: 10px;
   padding: 8px 12px;
   background: #0f1115;
   border: 1px solid #2a3246;
   border-radius: 10px;
-  font-family: monospace;
   text-align: center;
+  font-family: monospace;
 }
 
 /* Top buttons */
@@ -155,4 +155,13 @@ h1 {
 
 #preset button:active {
   transform: scale(0.98);
+}
+
+#toleranceR {
+  width: 100%;
+  background: #0f1115;
+  color: #e6e6e6;
+  outline: none;
+  appearance: none;
+  border-radius: 5px;
 }
