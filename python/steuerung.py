@@ -2,6 +2,7 @@
 import cv2
 import numpy as np
 import y2
+import config
 # Falls man nicht auf dem Raspi runnt
 try:
     import motor
@@ -28,10 +29,9 @@ def toKonturen(res_frames, Konturen):
                 flaeche = cv2.contourArea(k)
                 if flaeche < 20000:
                     continue  # Rauschen ignorieren
-            
 
                 # Kontur annähern (epsilon = Toleranz)
-                epsilon = 0.04 * cv2.arcLength(k, closed=True)
+                epsilon = config.tolerance_values[counter] * cv2.arcLength(k, closed=True)
                 approx = cv2.approxPolyDP(k, epsilon, closed=True)
                 ecken = len(approx)
                 Elemente.append((approx, flaeche))
@@ -46,11 +46,13 @@ def toKonturen(res_frames, Konturen):
                 # print(f"{shape}, Fläche: {flaeche:.0f}px²")
                 if counter is 1:
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 255, 0), thickness=2)
-                else:
+                elif counter is 2:
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 0, 255), thickness=2)
+                else:
+                    result = cv2.polylines(result, [approx], isClosed=True, color=(255, 255, 255), thickness=2)
             Ergebnis = cv2.bitwise_or(Ergebnis, result)
         Konturen.put(Ergebnis)
-        
+
         groeste_flaeche = 0
         groester_approx = None
         for i in range(len(Elemente)):

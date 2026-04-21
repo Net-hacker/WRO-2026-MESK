@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 mode = True # Konfiguration um Systemweite Kameramodus zu haben
 
@@ -13,4 +14,41 @@ tolerance_values = [
 ]
 
 def startup():
-    
+    for m in range(len(mask_values)):
+        upper, lower = loadPreset(m)
+        mask_values[m] = [upper, lower]
+
+    for t in range(len(tolerance_values)):
+        tolerance = load_tolerance(t)
+        tolerance_values[t] = tolerance
+
+def load_preset(id):
+    if not os.path.exists("Preset/"):
+        return None, None
+
+    try:
+        with open(f"Preset/{id}_Preset.txt", "r") as file:
+            content = file.read()
+            file.close()
+    except:
+        return None, None
+
+    werte = [int(w.strip()) for w in content.split(",")]
+
+    lower = np.array(werte[:3])
+    upper = np.array(werte[3:])
+
+    return upper, lower
+
+def load_tolerance(id):
+    if not os.path.exists("Preset/"):
+        return None
+
+    try:
+        with open(f"Preset/{id}_Tolerance.txt", "r") as file:
+            tolerance = file.read()
+            file.close()
+    except:
+        return None
+
+    return tolerance
