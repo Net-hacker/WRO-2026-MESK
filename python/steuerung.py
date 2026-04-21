@@ -14,6 +14,7 @@ def toKonturen(res_frames, Konturen):
         results = res_frames.get()
         Ergebnis = np.zeros_like(results[0])
         counter = -1
+        Elemente = []
         for result in results:
             counter = counter + 1
             grau = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
@@ -24,7 +25,6 @@ def toKonturen(res_frames, Konturen):
                 cv2.RETR_EXTERNAL,    # nur äußere Konturen
                 cv2.CHAIN_APPROX_SIMPLE  # komprimierte Darstellung
             )
-            Elemente = []
             for k in konturen:
                 flaeche = cv2.contourArea(k)
                 if flaeche < 20000:
@@ -39,7 +39,6 @@ def toKonturen(res_frames, Konturen):
                 approx = cv2.approxPolyDP(k, epsilon, closed=True)
                 ecken = len(approx)
                 Elemente.append((approx, flaeche))
-
                 if ecken == 3:
                     shape = "Dreieck"
                 elif ecken == 4:
@@ -48,19 +47,16 @@ def toKonturen(res_frames, Konturen):
                     shape = f"Polygon ({ecken} Ecken)"
 
                 # print(f"{shape}, Fläche: {flaeche:.0f}px²")
-                if counter is 1:
+                if counter == 1:
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 255, 0), thickness=2)
-                elif counter is 2:
+                elif counter == 2:
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 0, 255), thickness=2)
                 else:
                     result = cv2.polylines(result, [approx], isClosed=True, color=(255, 255, 255), thickness=2)
             Ergebnis = cv2.bitwise_or(Ergebnis, result)
         Konturen.put(Ergebnis)
-
         groeste_flaeche = 0
         groester_approx = None
-        #for i in range(len(Elemente)):
-        #    approx, flaeche = Elemente[i - 1]
         for approx, flaeche in Elemente:
             if flaeche > groeste_flaeche:
                 groeste_flaeche = flaeche
@@ -69,5 +65,5 @@ def toKonturen(res_frames, Konturen):
             continue
         punkte = groester_approx.reshape(-1, 2)
         mittelpunkt = np.mean(punkte, axis=0) # Mittelpunkt des größen Objektes bestimmen
-        print(groeste_flaeche)
-        #servo.steer()
+        # print(groeste_flaeche)
+        servo.steer(mittelpunkt/2500)
