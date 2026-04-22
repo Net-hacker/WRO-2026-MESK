@@ -1,5 +1,6 @@
 import numpy as np
 import os
+from motor import bewegung
 
 mode = True # Konfiguration um Systemweite Kameramodus zu haben
 
@@ -14,8 +15,10 @@ tolerance_values = [
 ]
 
 def startup():
+    bewegung(0.1)
+
     for m in range(len(mask_values)):
-        upper, lower = loadPreset(m)
+        upper, lower = load_preset(m)
         mask_values[m] = [upper, lower]
 
     for t in range(len(tolerance_values)):

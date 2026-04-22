@@ -15,8 +15,8 @@ def run_camera(frames, res_frames):
     else:
         from picamera2 import Picamera2
         picam2 = Picamera2()
-        configIMG = picam2.create_still_configuration()
-        picam2.configure(configIMG)
+        # configIMG = picam2.create_still_configuration()
+        # picam2.configure(configIMG)
         picam2.start() # Starte Kamera mit picam2
         print("Kamera erfolgreich gestartet")
 

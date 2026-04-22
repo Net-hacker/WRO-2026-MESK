@@ -12,6 +12,7 @@ except ImportError:
     print("Modus von Raspberry Pi zu Laptop gewechselt, da libcamera oder picamera2 nicht installiert ist.")
     config.mode = False
 
+config.startup() # Starte die Startup Funktion um die Presets zu laden und den Motor zu stoppen
 frames = Queue(maxsize=5) # Neuen Queue erstellen in welchen die letzten 5 Frames gespeichert werden
 res_frames = Queue(maxsize=5) # Neuen Queue erstellen in welchem die letzten 5 Maskierten Frames gespeichert werden
 Konturen = Queue(maxsize=5)

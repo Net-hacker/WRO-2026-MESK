@@ -72,13 +72,11 @@ def toKonturen(res_frames, Konturen):
         # print(mittelpunkt)
         time.sleep(0.1)
         if counter == 1: # Grüne = Links
-            ServoMove = -(-mittelpunkt[0]+2500)/2500
-            print("Servo: ", -(-mittelpunkt[0]+2500)/2500)
+            ServoMove = -(-mittelpunkt[0]+600)/600
         elif counter == 2: # Rote = Rechts
-            ServoMove = -(-mittelpunkt[0]+2500)/2500
-            print("Servo: ", (-mittelpunkt[0]+2500)/2500)
+            ServoMove = -(-mittelpunkt[0]+600)/600
         else:
             ServoMove = 0
-            print("Servo: 0")
 
+        print("Mittelpunkt:", mittelpunkt, "ServoMove:", ServoMove)
         servo.steer(ServoMove)
