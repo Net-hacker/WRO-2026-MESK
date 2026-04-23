@@ -1,6 +1,7 @@
 import numpy as np
 import os
 from motor import bewegung
+from servo import steer
 
 mode = True # Konfiguration um Systemweite Kameramodus zu haben
 
@@ -15,7 +16,8 @@ tolerance_values = [
 ]
 
 def startup():
-    bewegung(0.2)
+    steer(0)
+    bewegung(0.6)
 
     for m in range(len(mask_values)): # Ufbassa, ob das richtig ist??
         upper, lower = load_preset(m)

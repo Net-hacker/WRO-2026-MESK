@@ -88,3 +88,6 @@ def toKonturen(res_frames, Konturen):
 
         print("Mittelpunkt:", mittelpunkt, "ServoMove:", ServoMove)
         servo.steer(ServoMove)
+
+
+def 

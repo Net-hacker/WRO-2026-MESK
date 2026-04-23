@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify, render_template, Response, send_from_
 import cv2
 import numpy as np
 import os
-import config
 import cam
+import config
 
 flask_app = Flask(__name__)
 
