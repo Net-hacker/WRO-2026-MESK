@@ -56,9 +56,13 @@ def toKonturen(res_frames, Konturen):
                 elif counter == 1: # Rot
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 0, 255), thickness=2)
                 else:
+                    print("Unbekannte Maske, weiße Kontur gezeichnet")
                     result = cv2.polylines(result, [approx], isClosed=True, color=(255, 255, 255), thickness=2)
             Ergebnis = cv2.bitwise_or(Ergebnis, result)
+        if Konturen.full():
+            Konturen.get()
         Konturen.put(Ergebnis)
+        
         groeste_flaeche = 0
         groester_approx = None
         groeste_maske = None
@@ -76,9 +80,9 @@ def toKonturen(res_frames, Konturen):
         counter = groeste_maske
         print(counter)
         if counter == 0: # Grüne = Links
-            ServoMove = -(-mittelpunkt[0]+600)/600
+            ServoMove = -(-0.8*mittelpunkt[0]+480)/600
         elif counter == 1: # Rote = Rechts
-            ServoMove = (mittelpunkt[0])/600
+            ServoMove = (0.8* mittelpunkt[0] + 480)/600
         else:
             ServoMove = 0
 

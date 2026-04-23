@@ -10,3 +10,4 @@
 | [ ] | Autonomes Fahren |
 | [ ] | Memory |
 | [ ] | Maskenspezifische Ergebnisse: Der Punkt... Ist von dieser Maske erkannt worden |
+| [ ] | Fixen dass der Webserver zum Fahren nötig ist |

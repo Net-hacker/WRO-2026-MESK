@@ -17,6 +17,6 @@ frames = Queue(maxsize=5) # Neuen Queue erstellen in welchen die letzten 5 Frame
 res_frames = Queue(maxsize=5) # Neuen Queue erstellen in welchem die letzten 5 Maskierten Frames gespeichert werden
 Konturen = Queue(maxsize=5)
 threading.Thread(target=steuerung.toKonturen, args = (res_frames, Konturen)).start()
-threading.Thread(target=webserver.host_webserver, args = (frames, Konturen)).start() # Neuen Thread für Webserver starten
+# threading.Thread(target=webserver.host_webserver, args = (frames, Konturen)).start() # Neuen Thread für Webserver starten
 threading.Thread(target=cam.run_camera, args = (frames, res_frames)).start() # Neuen Thread für Kamera starten
-# threading.Thread(target=steuerung)
+
