@@ -29,18 +29,20 @@ def toKonturen(res_frames, Konturen):
             )
             for k in konturen:
                 flaeche = cv2.contourArea(k)
-                if flaeche < 20000:
+                if flaeche < 5000:
                     continue  # Rauschen ignorieren
 
                 # Kontur annähern (epsilon = Toleranz)
                 try:
-                    epsilon = config.tolerance_values[counter] * cv2.arcLength(k, closed=True)
+                    epsilon = float(config.tolerance_values[counter]) * cv2.arcLength(k, closed=True)
                 except:
-                    print(config.tolerance_values[counter])
-                    print(cv2.arcLength(k, closed=True))
+                    print(type(config.tolerance_values[counter]))
+                    print(type(cv2.arcLength(k, closed=True)))
+                    print("Epsilon hat gekracht, setze auf Standardwert 0.2")
+                    epsilon = 0.2 * cv2.arcLength(k, closed=True)
                 approx = cv2.approxPolyDP(k, epsilon, closed=True)
                 ecken = len(approx)
-                Elemente.append((approx, flaeche, counter - 1))
+                Elemente.append((approx, flaeche, counter))
                 if ecken == 3:
                     shape = "Dreieck"
                 elif ecken == 4:
@@ -48,10 +50,10 @@ def toKonturen(res_frames, Konturen):
                 else:
                     shape = f"Polygon ({ecken} Ecken)"
 
-                # print(f"{shape}, Fläche: {flaeche:.0f}px²")
-                if counter == 1:
+                print(f"{shape}, Fläche: {flaeche:.0f}px²")
+                if counter == 0: # Grün
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 255, 0), thickness=2)
-                elif counter == 2:
+                elif counter == 1: # Rot
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 0, 255), thickness=2)
                 else:
                     result = cv2.polylines(result, [approx], isClosed=True, color=(255, 255, 255), thickness=2)
@@ -59,7 +61,7 @@ def toKonturen(res_frames, Konturen):
         Konturen.put(Ergebnis)
         groeste_flaeche = 0
         groester_approx = None
-        groeste_maske = ""
+        groeste_maske = None
         for approx, flaeche, maske in Elemente:
             if flaeche > groeste_flaeche:
                 groeste_flaeche = flaeche
@@ -71,10 +73,12 @@ def toKonturen(res_frames, Konturen):
         mittelpunkt = np.mean(punkte, axis=0) # Mittelpunkt des größen Objektes bestimmen
         # print(mittelpunkt)
         time.sleep(0.1)
-        if counter == 1: # Grüne = Links
+        counter = groeste_maske
+        print(counter)
+        if counter == 0: # Grüne = Links
             ServoMove = -(-mittelpunkt[0]+600)/600
-        elif counter == 2: # Rote = Rechts
-            ServoMove = -(-mittelpunkt[0]+600)/600
+        elif counter == 1: # Rote = Rechts
+            ServoMove = (mittelpunkt[0])/600
         else:
             ServoMove = 0
 

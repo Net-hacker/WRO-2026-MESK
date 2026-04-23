@@ -28,7 +28,7 @@ Bidde, beim venv erstellen mit der Flag ``` --system-site-packages ```
 Man kann die Motor- und Servo-Funktionen wie folgt aufrufen:
 
 Servo:
-``` steer(0.0) #-1.0 (rechts) bis 1.0 (links) -> 0.0 (Mitte) ```
+``` steer(0.0) #-1.0 (links) bis 1.0 (rechts) -> 0.0 (Mitte) ```
 
 Motor:
-``` motor(vorwaerts, 0.3) #vorwaerts/rueckwaerts, 0.0 bis 1.0 für Feineinstellung ```
+``` bewegung(0.3) , -1.0 bis 1.0 für Feineinstellung ```

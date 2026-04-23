@@ -15,15 +15,15 @@ tolerance_values = [
 ]
 
 def startup():
-    bewegung(0.1)
+    bewegung(0.2)
 
-    for m in range(len(mask_values)):
+    for m in range(len(mask_values)): # Ufbassa, ob das richtig ist??
         upper, lower = load_preset(m)
         mask_values[m] = [upper, lower]
 
     for t in range(len(tolerance_values)):
         tolerance = load_tolerance(t)
-        tolerance_values[t] = tolerance
+        tolerance_values[t - 1] = tolerance
 
 def load_preset(id):
     if not os.path.exists("Preset/"):
@@ -52,6 +52,6 @@ def load_tolerance(id):
             tolerance = file.read()
             file.close()
     except:
-        return None
+        return 0.2
 
     return tolerance
