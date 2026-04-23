@@ -5,14 +5,21 @@ from servo import steer
 
 mode = True # Konfiguration um Systemweite Kameramodus zu haben
 
+# [0] == Maske 1; [1] == Maske 2; [2] == Maske 3
 mask_values = [
     [np.array([0, 0, 0]), np.array([0, 0, 0])],
     [np.array([0, 0, 0]), np.array([0, 0, 0])],
     [np.array([0, 0, 0]), np.array([0, 0, 0])]
 ]
 
+# [0] == Maske 1; [1] == Maske 2; [2] == Maske 3
 tolerance_values = [
     0, 0, 0
+]
+
+# [0] == Links; [1] == Rechts
+ultra_values = [
+    0, 0
 ]
 
 def startup():
