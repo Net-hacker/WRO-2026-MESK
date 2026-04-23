@@ -158,8 +158,8 @@ function UpdateTolerance(id) {
   fetch(`/get_tolerance?id=${id}`)
   .then(response => response.json())
   .then(data => {
-    const tolerance = data.TOLL;
-    tolerance.value = tolerance / 0.0008;
+    const new_tolerance = data.TOLL;
+    tolerance.value = new_tolerance / 0.0008;
   })
   .catch((e) => console.error(e));
 }
@@ -264,5 +264,19 @@ function showLive() {
 // Für die onlick Events
 document.getElementById("ResultB").addEventListener("click", showResult);
 document.getElementById("LiveB").addEventListener("click", showLive);
+
+const Motorslider = document.getElementById('mySlider');
+const display = document.getElementById('numDisplay');
+Motorslider.addEventListener('input', () => { 
+  display.textContent = Motorslider.value; 
+  fetch(`/set-motor?value=${Motorslider.value}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch((e) => console.error(e));
+});
+
+
 
 window.change_border = change_border;

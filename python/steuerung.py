@@ -1,8 +1,21 @@
-
-
+import motor
+import config
+import numpy as np
+import time
+from servo import steer
 
 def brain(Objekte):
     while True:
+        motor.bewegung(config.motor_value)
+        if Objekte.empty():
+            if config.servo_value != 0 and time.time() - config.last_servo_change > 0.5:
+                config.last_servo_change = time.time()
+                if config.servo_value > 0:
+                    config.servo_value = max(0, config.servo_value - 0.05)
+                else:
+                    config.servo_value = min(0, config.servo_value + 0.05)
+            steer(config.servo_value)
+            continue
         Elemente = Objekte.get()
         groeste_flaeche = 0
         groester_approx = None
@@ -28,3 +41,5 @@ def brain(Objekte):
             ServoMove = 0
 
         print("Mittelpunkt:", mittelpunkt, "ServoMove:", ServoMove)
+        config.servo_value = ServoMove
+        steer(ServoMove)

@@ -2,6 +2,7 @@ import numpy as np
 import os
 from motor import bewegung
 from servo import steer
+import time
 
 mode = True # Konfiguration um Systemweite Kameramodus zu haben
 
@@ -22,9 +23,15 @@ ultra_values = [
     0, 0
 ]
 
+motor_value = 0
+
+servo_value = 0
+
+last_servo_change = time.time()
+
 def startup():
     steer(0)
-    bewegung(0.6)
+    # bewegung(0.2)
 
     for m in range(len(mask_values)): # Ufbassa, ob das richtig ist??
         upper, lower = load_preset(m)

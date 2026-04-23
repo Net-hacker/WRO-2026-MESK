@@ -4,7 +4,7 @@ import cam
 import Objekterkennung
 import steuerung
 from queue import Queue
-import ttime
+import time
 import config
 import ultraschall as us
 try:
@@ -23,5 +23,5 @@ Konturen = Queue(maxsize=5)
 threading.Thread(target=Objekterkennung.toKonturen, args = (res_frames, Konturen, Objekte)).start()
 threading.Thread(target=webserver.host_webserver, args = (frames, Konturen)).start() # Neuen Thread für Webserver starten
 threading.Thread(target=cam.run_camera, args = (frames, res_frames)).start() # Neuen Thread für Kamera starten
-threading.Thread(target=steuerung.brain, args = (Objekte)).start() # Neuen Thread für Ultraschallsensoren starten
-threading.Thread(target=us.ultraRead).start()
+threading.Thread(target=steuerung.brain, args = (Objekte,)).start()
+# threading.Thread(target=us.ultraRead).start()

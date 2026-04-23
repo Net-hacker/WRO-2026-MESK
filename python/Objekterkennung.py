@@ -5,11 +5,6 @@ import numpy as np
 import y2
 import config
 # Falls man nicht auf dem Raspi runnt
-try:
-    import motor
-    import servo
-except ImportError:
-    pass
 
 def toKonturen(res_frames, Konturen, Objekte):
     while True:

@@ -140,4 +140,10 @@ def host_webserver(frames, res_frames):
 
         return jsonify({"TOLL": tolerance}), 200
 
+    @flask_app.route("/set-motor")
+    def set_motor():
+        value = request.args.get('value')
+        config.motor_value = float(value)
+        return jsonify({"sucess": True})
+
     flask_app.run(host='0.0.0.0', port=5000)
