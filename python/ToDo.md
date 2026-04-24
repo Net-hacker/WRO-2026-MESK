@@ -15,3 +15,8 @@
 | [ ] | Ignoriere die Erkannten Elemente außer-/überhalb der Map |
 | [ ] | Beim Berechnen der Nähe eines Objektes Alle folgende Hilfsmittel nutzen um zu präzisieren: Fläche, Ultraschall, Höhe der Oberkante |
 | [X] | Zusammenfügen der Masken 2 & 3 zur Berechnung eines Roten Elements |
+| [ ] | Banden erkennen mit Ultraschallsensensoren |
+| [X] | Kompasssensor implementiert bei Start um Fahrrichtung zu erkennen |
+| [ ] | Objekte nur erkennen, wenn es realistisch ist dass sich das Objekt auf dieser Höhe befindet |
+| [ ] | Hotspot + Notfallhotspot einrichten |
+| [ ] | Brightsness Value in Datei speichern |

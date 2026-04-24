@@ -1,5 +1,6 @@
 from gpiozero import DistanceSensor
 import config
+import time
 
 sLinks = DistanceSensor(echo=21, trigger=20)
 sRechts = DistanceSensor(echo=26, trigger=16)
@@ -16,4 +17,7 @@ def ultraRead():
             continue
         else:
            config.ultra_values[1] = distR
-        print("Ultra Rechts: ", distR, "  Ultra Links: ", distL)
+        print("Ultra Links: ", distL, "  Ultra Rechts: ", distR, )
+        time.sleep(0.1)
+
+ultraRead()

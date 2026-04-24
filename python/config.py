@@ -40,12 +40,14 @@ motor_value = 0
 
 servo_value = 0
 
+brightness_value = 0
+
 last_servo_change = time.time()
 
 def startup():
     try:
         steer(0)
-        # bewegung(0.2)
+        bewegung(0.2)
     except:
         pass
 

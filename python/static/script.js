@@ -4,7 +4,8 @@ import noUiSlider from "https://cdn.jsdelivr.net/npm/nouislider@15.7.0/+esm";
 // Stuff that happens at the begining of the programm
 const container = document.getElementById("stream");
 const slider = document.getElementById("slider");
-const output = document.getElementById("output");
+const outputU = document.getElementById("outputU");
+const outputL = document.getElementById("outputL");
 const tolerance = document.getElementById("toleranceR");
 const toleranceOut = document.getElementById("toleranceV");
 const angle = document.getElementById("angleSlider");
@@ -70,7 +71,7 @@ ColorPicker.on('color:change', function(color) {
   const h = Math.round(color.hsv.h);
   const s = Math.round(color.hsv.s);
   const v = Math.round(color.hsv.v);
-  output.textContent = `${h}, ${s}, ${v}`;
+  outputL.textContent = `${h}, ${s}, ${v}`;
   const id = Mask;
   fetch("/set_value", {
     method: "POST",
@@ -94,7 +95,7 @@ ColorPicker2.on('color:change', function(color) {
   const h = Math.round(color.hsv.h);
   const s = Math.round(color.hsv.s);
   const v = Math.round(color.hsv.v);
-  output.textContent = `${h}, ${s}, ${v}`;
+  outputU.textContent = `${h}, ${s}, ${v}`;
   const id = Mask;
   fetch("/set_value", {
     method: "POST",
@@ -308,6 +309,16 @@ Motorslider.addEventListener('input', () => {
   .catch((e) => console.error(e));
 });
 
-
+const BrightnessSlider = document.getElementById('brightnessSlider');
+const brightnessDisplay = document.getElementById('brightnessDisplay');
+BrightnessSlider.addEventListener('input', () => {
+  brightnessDisplay.textContent = BrightnessSlider.value;
+  fetch(`/set-brightness?value=${BrightnessSlider.value}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch((e) => console.error(e));
+});
 
 window.change_border = change_border;

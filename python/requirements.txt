@@ -3,3 +3,4 @@ Flask
 opencv-python
 y2
 adafruit-circuitpython-bno055
+adafruit-circuitpython-vl53l0x
