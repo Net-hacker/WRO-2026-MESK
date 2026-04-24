@@ -7,6 +7,8 @@ const slider = document.getElementById("slider");
 const output = document.getElementById("output");
 const tolerance = document.getElementById("toleranceR");
 const toleranceOut = document.getElementById("toleranceV");
+const angle = document.getElementById("angleR");
+const angleOut = document.getElementById("angleV");
 var ColorPicker = new iro.ColorPicker("#picker", {
   width: 250,
   color: "rgb(255, 0, 0)",
@@ -113,6 +115,7 @@ ColorPicker2.on('color:change', function(color) {
 UpdatePresets(1) //Add Preset Button to document
 change_border(1) //Update slider values
 UpdateTolerance(1) //Update Toleranzen
+UpdateAngle(1) //Update Winkel
 
 tolerance.oninput = function() {
   const id = Mask;
@@ -130,7 +133,25 @@ tolerance.oninput = function() {
     })
   })
   .then(response => response.text())
-  .then(response => console.log(response))
+  .then(response => console.log(response));
+};
+
+angle.oninput = function() {
+  const id = Mask;
+  const angleV = angle.value * 360;
+  angleOut.textContent = angleV
+
+  fetch("/send_angle", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ID: id,
+      ANG: angleV
+    })
+  })
+  .then(response => response.text());
 };
 
 //Functions
@@ -160,6 +181,16 @@ function UpdateTolerance(id) {
   .then(data => {
     const new_tolerance = data.TOLL;
     tolerance.value = new_tolerance / 0.0008;
+  })
+  .catch((e) => console.error(e));
+}
+
+function UpdateAngle(id) {
+  fetch(`/get_angle?id=${id}`)
+  .then(response => response.json())
+  .then(data => {
+    const new_angle = data.ANG;
+    angle.value = new_angle / 360;
   })
   .catch((e) => console.error(e));
 }
@@ -267,8 +298,8 @@ document.getElementById("LiveB").addEventListener("click", showLive);
 
 const Motorslider = document.getElementById('mySlider');
 const display = document.getElementById('numDisplay');
-Motorslider.addEventListener('input', () => { 
-  display.textContent = Motorslider.value; 
+Motorslider.addEventListener('input', () => {
+  display.textContent = Motorslider.value;
   fetch(`/set-motor?value=${Motorslider.value}`)
   .then(response => response.json())
   .then(data => {
