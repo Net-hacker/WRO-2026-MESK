@@ -2,3 +2,4 @@ Flask-SQLAlchemy
 Flask
 opencv-python
 y2
+adafruit-circuitpython-bno055
