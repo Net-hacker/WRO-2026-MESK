@@ -53,6 +53,8 @@ def generate_res(res_frames, frame):
 
     results = []
     for lower, upper in config.mask_values:
+        lower = np.array(lower, dtype=np.uint8)
+        upper = np.array(upper, dtype=np.uint8)
         mask = cv2.inRange(hsv, lower, upper)
         res = cv2.bitwise_and(frame, frame, mask=mask)
         results.append(res)

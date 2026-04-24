@@ -24,7 +24,7 @@ def bewegung(geschwindigkeit: float):
     if geschwindigkeit > 0:
         motor("vorwaerts", geschwindigkeit)
     elif geschwindigkeit < 0:
-        motor("rueckwaerts", geschwindigkeit)
+        motor("rueckwaerts", - geschwindigkeit)
     else:
         motor_stop()
 

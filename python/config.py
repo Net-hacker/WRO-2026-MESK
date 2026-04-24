@@ -9,8 +9,16 @@ import time
 
 mode = True # Konfiguration um Systemweite Kameramodus zu haben
 
+# ANLEITUNG ZUM HINZUFÜGEN NEUER MASKEN:
+# - Bei mask_values eine neue Zeile hinzufügen
+# - Bei tolerance_values einen neuen Wert hinzufügen
+# - In Objekterkennung.py in der Funktion toKonturen die if-Abfrage erweitern
+
+
 # [0] == Maske 1; [1] == Maske 2; [2] == Maske 3
 mask_values = [
+    [np.array([0, 0, 0]), np.array([0, 0, 0])],
+    [np.array([0, 0, 0]), np.array([0, 0, 0])],
     [np.array([0, 0, 0]), np.array([0, 0, 0])],
     [np.array([0, 0, 0]), np.array([0, 0, 0])],
     [np.array([0, 0, 0]), np.array([0, 0, 0])]
@@ -18,7 +26,7 @@ mask_values = [
 
 # [0] == Maske 1; [1] == Maske 2; [2] == Maske 3
 tolerance_values = [
-    0, 0, 0
+    0, 0, 0, 0, 0
 ]
 
 angle_value = 0
@@ -43,7 +51,8 @@ def startup():
 
     for m in range(len(mask_values)): # Ufbassa, ob das richtig ist??
         upper, lower = load_preset(m)
-        mask_values[m] = [upper, lower]
+        if upper is not None and lower is not None:
+            mask_values[m] = [upper, lower]
 
     for t in range(len(tolerance_values)):
         tolerance = load_tolerance(t)

@@ -35,7 +35,7 @@ def brain(Objekte):
         print(counter)
         if counter == 0: # Grüne = Links
             ServoMove = -(-0.8*mittelpunkt[0]+480)/600
-        elif counter == 1: # Rote = Rechts
+        elif counter == 1 or counter == 2: # Rote = Rechts
             ServoMove = (0.8* mittelpunkt[0] + 480)/600
         else:
             ServoMove = 0

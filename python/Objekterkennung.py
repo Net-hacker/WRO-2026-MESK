@@ -31,6 +31,7 @@ def toKonturen(res_frames, Konturen, Objekte):
                 try:
                     epsilon = float(config.tolerance_values[counter]) * cv2.arcLength(k, closed=True)
                 except:
+                    print(counter)
                     print(type(config.tolerance_values[counter]))
                     print(type(cv2.arcLength(k, closed=True)))
                     print("Epsilon hat gekracht, setze auf Standardwert 0.2")
@@ -48,7 +49,7 @@ def toKonturen(res_frames, Konturen, Objekte):
                 print(f"{shape}, Fläche: {flaeche:.0f}px²")
                 if counter == 0: # Grün
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 255, 0), thickness=2)
-                elif counter == 1: # Rot
+                elif counter == 1 or counter == 2: # Rot
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 0, 255), thickness=2)
                 else:
                     print("Unbekannte Maske, weiße Kontur gezeichnet")
