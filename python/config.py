@@ -21,10 +21,7 @@ tolerance_values = [
     0, 0, 0
 ]
 
-# [0] == Maske 1; [1] == Maske 2; [2] == Maske 3
-angle_values = [
-    0, 0, 0
-]
+angle_value = 0
 
 # [0] == Links; [1] == Rechts
 ultra_values = [
@@ -52,9 +49,9 @@ def startup():
         tolerance = load_tolerance(t)
         tolerance_values[t - 1] = tolerance
 
-    for a in range(len(angle_values)):
-        angle = load_angle(a)
-        angle_values[a - 1] = angle
+    angle_value = load_angle()
+
+    
 
 def load_preset(id):
     if not os.path.exists("Preset/"):
@@ -87,12 +84,12 @@ def load_tolerance(id):
 
     return tolerance
 
-def load_angle(id):
-    if not os.path.exists("Preset/"):#
+def load_angle():
+    if not os.path.exists("Preset/"):
         return 0
 
     try:
-        with open(f"Preset/{id}_Angle.txt", "r") as file:
+        with open(f"Preset/Angle.txt", "r") as file:
             angle = file.read()
             file.close()
     except:

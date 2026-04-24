@@ -24,22 +24,31 @@
         <div id="picker"></div>
         <div id="picker2"></div>
         <input type="range" min="0" max="0,08" id="toleranceR">
-        <input type="range" min="0" max="360" id="angleR">
+        <div id="preset"></div>
         <div class="text">
           <p id="output"></p>
           <p id="toleranceV"></p>
-          <p id="angleV"></p>
         </div>
-        <div id="preset"></div>
       </div>
     </div>
     <div class ="container">
-    <div class="slider-card">
-        <span class="slider-label">Wert</span>
-        <span class="slider-number" id="numDisplay">0</span>
+      <div class="slider-card">
+        <span class="slider-label">Winkel der Matte</span>
+        <span class="slider-number" id="angleDisplay">0</span>
+        <div class="slider-row">
+          <span class="slider-bound">0°</span>
+          <input type="range" min="0" max="360" id="angleSlider" value="0">
+          <span class="slider-bound">360°</span>
+        </div>
+      </div>
+    </div>
+    <div class ="container">
+      <div class="slider-card">
+        <span class="slider-label">Geschwindigkeit</span>
+        <span class="slider-number" id="motorDisplay">0</span>
         <div class="slider-row">
           <span class="slider-bound">0</span>
-          <input type="range" id="mySlider" min="0" max="1" value="0" step="0.01">
+          <input type="range" id="motorSlider" min="0" max="1" value="0" step="0.01">
           <span class="slider-bound">1</span>
         </div>
       </div>

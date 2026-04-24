@@ -140,18 +140,14 @@ def host_webserver(frames, res_frames):
 
         return jsonify({"TOLL": tolerance}), 200
 
-    @flask_app.route("/send_angle")
+    @flask_app.route("/send_angle", methods=["POST"])
     def angler():
         data = request.get_json()
-        id = data.get("ID")
         angle = data.get("ANG")
 
-        if len(config.angle_values) >= int(id):
-            config.angle_values[int(id) - 1] = float(angle)
-        else:
-            print("Error while saving Angle: ID is not valid")
+        config.angle_value = float(angle)
 
-        with open(f"Preset/{id}_Angle.txt", "w") as file:
+        with open(f"Preset/Angle.txt", "w") as file:
             file.write(f"{float(angle)}")
             file.close()
 
@@ -159,13 +155,7 @@ def host_webserver(frames, res_frames):
 
     @flask_app.route("/get_angle")
     def loadAng():
-        id = request.args.get(id)
-
-        if len(config.angle_values) >= int(id):
-            angle = config.angle_values[int(id) - 1]
-        else:
-            print("Error while getting Angle value: ID is not valid")
-            return 400
+        angle = config.angle_value
 
         return jsonify({"ANG": angle}), 200
 

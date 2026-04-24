@@ -1,20 +1,20 @@
-import threading
-import webserver
-import cam
-import Objekterkennung
-import steuerung
-from queue import Queue
-import time
-import config
-import ultraschall as us
-try:
-    import libcamera
-    from picamera2 import Picamera2
-except ImportError:
-    print("Modus von Raspberry Pi zu Laptop gewechselt, da libcamera oder picamera2 nicht installiert ist.")
-    config.mode = False
-
 def main():
+    import threading
+    import webserver
+    import cam
+    import Objekterkennung
+    import steuerung
+    from queue import Queue
+    import time
+    import config
+    import ultraschall as us
+    try:
+        import libcamera
+        from picamera2 import Picamera2
+    except ImportError:
+        print("Modus von Raspberry Pi zu Laptop gewechselt, da libcamera oder picamera2 nicht installiert ist.")
+        config.mode = False
+
     config.startup() # Starte die Startup Funktion um die Presets zu laden und den Motor zu stoppen
     Objekte = Queue(maxsize=5)
     frames = Queue(maxsize=5) # Neuen Queue erstellen in welchen die letzten 5 Frames gespeichert werden

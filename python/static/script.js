@@ -7,8 +7,8 @@ const slider = document.getElementById("slider");
 const output = document.getElementById("output");
 const tolerance = document.getElementById("toleranceR");
 const toleranceOut = document.getElementById("toleranceV");
-const angle = document.getElementById("angleR");
-const angleOut = document.getElementById("angleV");
+const angle = document.getElementById("angleSlider");
+const angleOut = document.getElementById("angleDisplay");
 var ColorPicker = new iro.ColorPicker("#picker", {
   width: 250,
   color: "rgb(255, 0, 0)",
@@ -115,7 +115,7 @@ ColorPicker2.on('color:change', function(color) {
 UpdatePresets(1) //Add Preset Button to document
 change_border(1) //Update slider values
 UpdateTolerance(1) //Update Toleranzen
-UpdateAngle(1) //Update Winkel
+UpdateAngle() //Update Winkel
 
 tolerance.oninput = function() {
   const id = Mask;
@@ -138,7 +138,7 @@ tolerance.oninput = function() {
 
 angle.oninput = function() {
   const id = Mask;
-  const angleV = angle.value * 360;
+  const angleV = angle.value;
   angleOut.textContent = angleV
 
   fetch("/send_angle", {
@@ -147,11 +147,11 @@ angle.oninput = function() {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      ID: id,
       ANG: angleV
     })
   })
-  .then(response => response.text());
+  .then(response => response.text())
+  .catch((e) => console.error(e));
 };
 
 //Functions
@@ -185,8 +185,8 @@ function UpdateTolerance(id) {
   .catch((e) => console.error(e));
 }
 
-function UpdateAngle(id) {
-  fetch(`/get_angle?id=${id}`)
+function UpdateAngle() {
+  fetch(`/get_angle`)
   .then(response => response.json())
   .then(data => {
     const new_angle = data.ANG;
@@ -296,8 +296,8 @@ function showLive() {
 document.getElementById("ResultB").addEventListener("click", showResult);
 document.getElementById("LiveB").addEventListener("click", showLive);
 
-const Motorslider = document.getElementById('mySlider');
-const display = document.getElementById('numDisplay');
+const Motorslider = document.getElementById('motorSlider');
+const display = document.getElementById('motorDisplay');
 Motorslider.addEventListener('input', () => {
   display.textContent = Motorslider.value;
   fetch(`/set-motor?value=${Motorslider.value}`)
