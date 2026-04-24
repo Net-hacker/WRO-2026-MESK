@@ -1,7 +1,10 @@
 import numpy as np
 import os
-from motor import bewegung
-from servo import steer
+try:
+    from motor import bewegung
+    from servo import steer
+except ImportError:
+    pass
 import time
 
 mode = True # Konfiguration um Systemweite Kameramodus zu haben
@@ -18,6 +21,11 @@ tolerance_values = [
     0, 0, 0
 ]
 
+# [0] == Maske 1; [1] == Maske 2; [2] == Maske 3
+angle_values = [
+    0, 0, 0
+]
+
 # [0] == Links; [1] == Rechts
 ultra_values = [
     0, 0
@@ -30,8 +38,11 @@ servo_value = 0
 last_servo_change = time.time()
 
 def startup():
-    steer(0)
-    # bewegung(0.2)
+    try:
+        steer(0)
+        # bewegung(0.2)
+    except:
+        pass
 
     for m in range(len(mask_values)): # Ufbassa, ob das richtig ist??
         upper, lower = load_preset(m)
@@ -40,6 +51,10 @@ def startup():
     for t in range(len(tolerance_values)):
         tolerance = load_tolerance(t)
         tolerance_values[t - 1] = tolerance
+
+    for a in range(len(angle_values)):
+        angle = load_angle(a)
+        angle_values[a - 1] = angle
 
 def load_preset(id):
     if not os.path.exists("Preset/"):
@@ -61,7 +76,7 @@ def load_preset(id):
 
 def load_tolerance(id):
     if not os.path.exists("Preset/"):
-        return None
+        return 0.2
 
     try:
         with open(f"Preset/{id}_Tolerance.txt", "r") as file:
@@ -71,3 +86,16 @@ def load_tolerance(id):
         return 0.2
 
     return tolerance
+
+def load_angle(id):
+    if not os.path.exists("Preset/"):#
+        return 0
+
+    try:
+        with open(f"Preset/{id}_Angle.txt", "r") as file:
+            angle = file.read()
+            file.close()
+    except:
+        return 0
+
+    return angle
