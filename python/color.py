@@ -71,39 +71,35 @@ def map_value(value, in_min, in_max, out_min, out_max):
 def constrain(value, min_val, max_val):
     return max(min_val, min(value, max_val))
 
-try:
-    print("TCS3200 Color Sensor - RGB Reading\n")
-    
-    while True:
-        red_readings = [read_red() for _ in range(3)]
-        green_readings = [read_green() for _ in range(3)]
-        blue_readings = [read_blue() for _ in range(3)]
+def read():
+    red_readings = [read_red() for _ in range(3)]
+    green_readings = [read_green() for _ in range(3)]
+    blue_readings = [read_blue() for _ in range(3)]
         
-        red_valid = [r for r in red_readings if r > 0]
-        green_valid = [g for g in green_readings if g > 0]
-        blue_valid = [b for b in blue_readings if b > 0]
+    red_valid = [r for r in red_readings if r > 0]
+    green_valid = [g for g in green_readings if g > 0]
+    blue_valid = [b for b in blue_readings if b > 0]
         
-        red_pw = sum(red_valid) // max(1, len(red_valid))
-        green_pw = sum(green_valid) // max(1, len(green_valid))
-        blue_pw = sum(blue_valid) // max(1, len(blue_valid))
+    red_pw = sum(red_valid) // max(1, len(red_valid))
+    green_pw = sum(green_valid) // max(1, len(green_valid))
+    blue_pw = sum(blue_valid) // max(1, len(blue_valid))
         
-        red_value = map_value(red_pw, red_min, red_max, 255, 0)
-        green_value = map_value(green_pw, green_min, green_max, 255, 0)
-        blue_value = map_value(blue_pw, blue_min, blue_max, 255, 0)
+    red_value = map_value(red_pw, red_min, red_max, 255, 0)
+    green_value = map_value(green_pw, green_min, green_max, 255, 0)
+    blue_value = map_value(blue_pw, blue_min, blue_max, 255, 0)
         
-        red_value = constrain(red_value, 0, 255)
-        green_value = constrain(green_value, 0, 255)
-        blue_value = constrain(blue_value, 0, 255)
+    red_value = constrain(red_value, 0, 255)
+    green_value = constrain(green_value, 0, 255)
+    blue_value = constrain(blue_value, 0, 255)
         
-        print(f"Red = {red_value} - Green = {green_value} - Blue = {blue_value}")
+    print(f"Red = {red_value} - Green = {green_value} - Blue = {blue_value}")
         
-        time.sleep(0.5)
+    time.sleep(0.1)
 
-except KeyboardInterrupt:
-    print("\nProgram stopped")
+def inter(r, g, b):
+    return 1
 
-finally:
-    # Optional (gpiozero macht das automatisch beim Beenden)
+def stop():
     s0.close()
     s1.close()
     s2.close()
