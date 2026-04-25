@@ -7,8 +7,6 @@ def main():
     from queue import Queue
     import time
     import config
-    import ultraschall as us
-    import brightness
     try:
         import libcamera
         from picamera2 import Picamera2
@@ -21,11 +19,13 @@ def main():
     frames = Queue(maxsize=5) # Neuen Queue erstellen in welchen die letzten 5 Frames gespeichert werden
     res_frames = Queue(maxsize=5) # Neuen Queue erstellen in welchem die letzten 5 Maskierten Frames gespeichert werden
     Konturen = Queue(maxsize=5)
-    threading.Thread(target=brightness.Update).start() # Neuen Thread für die Helligkeit starten
     threading.Thread(target=Objekterkennung.toKonturen, args = (res_frames, Konturen, Objekte)).start()
     threading.Thread(target=webserver.host_webserver, args = (frames, Konturen)).start() # Neuen Thread für Webserver starten
     threading.Thread(target=cam.run_camera, args = (frames, res_frames)).start() # Neuen Thread für Kamera starten
     threading.Thread(target=steuerung.brain, args = (Objekte,)).start()
+
+    time.sleep(2) # Warte 2 Sekunden, damit alle Threads gestartet sind
+    print(config.direction)
     # threading.Thread(target=us.ultraRead).start()
 
 # main()

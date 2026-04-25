@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import kompass
 try:
     from motor import bewegung
     from servo import steer
@@ -30,14 +31,14 @@ tolerance_values = [
     0, 0, 0, 0, 0
 ]
 
-angle_value = 0
+angle_value = 0 # Richtung der Matte
 
 # [0] == Links; [1] == Rechts
 ultra_values = [
     0, 0
 ]
 
-motor_value = 0
+speed = 0
 
 servo_value = 0
 
@@ -45,12 +46,14 @@ brightness_value = 0
 
 last_servo_change = time.time()
 
+direction = -1 # Richtung in die der Lauf geht. -1 = kein Wissen, 0 = Links, 1 = Rechts
+
 led = PWMLED(27)
 
 def startup():
     try:
         steer(0)
-        bewegung(0.2)
+        # bewegung(0.2)
     except:
         pass
 
@@ -65,7 +68,9 @@ def startup():
 
     angle_value = load_angle()
 
-    brightness_value = load_bright()
+    kompass.startup(float(angle_value))
+
+    brightness_value = load_brightness()
     UpdateLED()
 
 def load_preset(id):
@@ -126,4 +131,4 @@ def load_brightness():
     return bright
 
 def UpdateLED():
-    led.value = brightness_values
+    led.value = brightness_value

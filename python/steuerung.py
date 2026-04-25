@@ -6,8 +6,9 @@ from servo import steer
 
 def brain(Objekte):
     while True:
-        motor.bewegung(config.motor_value)
+        motor.bewegung(config.speed)
         if Objekte.empty():
+            # Versuch ne smoothe Steuerung zu machen
             if config.servo_value != 0 and time.time() - config.last_servo_change > 0.5:
                 config.last_servo_change = time.time()
                 if config.servo_value > 0:

@@ -162,7 +162,7 @@ def host_webserver(frames, res_frames):
     @flask_app.route("/set-motor")
     def set_motor():
         value = request.args.get('value')
-        config.motor_value = float(value)
+        config.speed = float(value)
         return jsonify({"sucess": True})
 
     @flask_app.route("/set-brightness")

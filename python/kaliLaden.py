@@ -31,12 +31,3 @@ def load_calibration(sensor, file_path="calibration_data.bin"):
     except Exception as e:
         print(f"❌ Fehler beim Laden: {e}")
         return False
-
-# 2. Kalibrierung laden
-load_calibration(sensor)
-
-# 3. Kurz warten, damit der Sensor die Werte verarbeiten kann
-time.sleep(0.5)
-
-# Test-Ausgabe: Checke den Status
-print(f"Aktueller Status nach Laden: {sensor.calibration_status}")

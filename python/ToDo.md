@@ -17,6 +17,6 @@
 | [X] | Zusammenfügen der Masken 2 & 3 zur Berechnung eines Roten Elements |
 | [ ] | Banden erkennen mit Sensensoren |
 | [X] | Kompasssensor implementiert bei Start um Fahrrichtung zu erkennen |
-| [ ] | Objekte nur erkennen, wenn es realistisch ist dass sich das Objekt auf dieser Höhe befindet |
 | [ ] | Hotspot + Notfallhotspot einrichten |
 | [ ] | Brightsness Value in Datei speichern |
+| [ ] | Vernünfiges Implemetieren der Mattenrichtung |
