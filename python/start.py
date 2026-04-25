@@ -5,8 +5,8 @@ import sys
 
 btn = Button(10, pull_up=True)
 
-# main.main()
-# sys.exit()
+main.main()
+sys.exit()
 # In Zukuft
 while True:
     time.sleep(0.01)

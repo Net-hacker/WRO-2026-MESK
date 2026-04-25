@@ -46,6 +46,14 @@ def toKonturen(res_frames, Konturen, Objekte):
                         highestPoint = y
                         idHighestPoint = id
                     id += 1
+
+                FlächeMax = 10* highestPoint + 0.6 * 5**(0.0184*(highestPoint+30))
+                FlächeMin = (0.991 * 2.71828 + 7 * 3 ** ( 0.0184*(highestPoint-70))) / 1.2
+                print(f"FlächeMin: {FlächeMin}  FlächeMax: {FlächeMax}  Fläche: {flaeche}  HighestPoint: {highestPoint}")
+                if flaeche < FlächeMin or flaeche > FlächeMax: 
+                    print("Fläche außerhalb der Grenzen, ignoriere Kontur")
+                    continue
+
                 ecken = len(approx)
                 # print(f"High: {highestPoint}  ID: {idHighestPoint}")
                 Elemente.append((approx, flaeche, counter))

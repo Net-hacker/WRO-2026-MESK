@@ -13,7 +13,7 @@ lastObjektPosition = None # None = Zu lange her, -1 = Links, 1 = Rechts
 
 def brain(Objekte):
     global alert
-    config.speed = 0.3
+    config.speed = 0
     while True:
         if alert == True:
             servo.steer(0.0)
@@ -21,16 +21,6 @@ def brain(Objekte):
             time.sleep(0.5)
             alert = False
         motor.bewegung(config.speed)
-        if Objekte.empty():
-            # Versuch ne smoothe Steuerung zu machen
-            if config.servo_value != 0 and time.time() - config.last_servo_change > 0.1:
-                config.last_servo_change = time.time()
-                if config.servo_value > 0:
-                    config.servo_value = max(0, config.servo_value - 0.05)
-                else:
-                    config.servo_value = min(0, config.servo_value + 0.05)
-            servo.steer(config.servo_value)
-            continue
         ServoMove = Objektwinkel(Objekte)
         if ServoMove is None:
             # print("Kein Objekt erkannt, fahre im Kreis")
@@ -60,16 +50,20 @@ def brain(Objekte):
                 ServoMove = ServoInDirection
             elif config.direction == -1: # Kein Wissen Temporär Rechts
                 ServoMove = ServoInDirection
-            global lastObjekttime
-            if time.time() - lastObjekttime < 0.5:
-                if fabs(ServoMove + lastObjektPosition) < 1:
+            global lastObjekttime, lastObjektPosition
+            if time.time() - lastObjekttime < 1:
+                print("Kein Objekt mehr in Sicht")
+                if abs(ServoMove + lastObjektPosition) < 1:
                     print("Verhindere fahren gegen das Objekt")
                     servo.steer(0)
                     continue
+                print("Objekt nicht mehr in Sicht, aber ServoMove nicht in Richtung des letzten Objekts, gehe weiter")
             else:
+                print("Objekt zu lange her, gehe im Kreis")
                 lastObjektPosition = None
             servo.steer(ServoMove)
-        elif ServoMove is not None:
+        else:
+            # print(f"Objekt erkannt, ServoMove: {ServoMove}")
             config.servo_value = ServoMove
             servo.steer(ServoMove)
 
@@ -97,17 +91,14 @@ def Objektwinkel(Objekte):
     else:
         lastObjektPosition = 1
     lastObjekttime = time.time()
+    # print("Objekt erkannt, lastObjektPosition:", lastObjektPosition, "lastObjekttime:", lastObjekttime, "counter:", groeste_maske)
     # print(mittelpunkt)
     time.sleep(0.1)
     counter = groeste_maske
-    #print(counter)
     if counter == 0: # Grüne = Links
-        ServoMove = -(-0.8*mittelpunkt[0]+480)/600
+        ServoMove = -(-0.8 * mittelpunkt[0]+480)/600
     elif counter == 1 or counter == 2: # Rote = Rechts
-        ServoMove = (0.8* mittelpunkt[0] + 480)/600
+        ServoMove = (0.8 * mittelpunkt[0] + 480)/600
     else:
         ServoMove = 0
-    #lastMask = groeste_maske
-    #timestamp = time.time()
-    # print("Mittelpunkt:", mittelpunkt, "ServoMove:", ServoMove)
     return ServoMove

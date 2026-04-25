@@ -8,7 +8,7 @@
 | [X] | Motor und Servo "Framework" |
 | [V] | Masken einstellen (Corona) |
 | [V] | Autonomes Fahren |
-| [ ] | Art von Memory (Für gewisse Entfernung blokieren von Fahren in Richtung Hindernis) |
+| [V] | Art von Memory (Für gewisse Entfernung blokieren von Fahren in Richtung Hindernis) |
 | [X] | Maskenspezifische Ergebnisse: Der Punkt... Ist von dieser Maske erkannt worden |
 | [X] | Fixen dass der Webserver zum Fahren nötig ist |
 | [ ] | Funktion zum Aufnehmen des Laufes, also der Kamera mit Maske, Objekterkennung, Motor & Servo-Einstellungen |
@@ -19,4 +19,5 @@
 | [ ] | Hotspot + Notfallhotspot einrichten |
 | [X] | Brightsness Value in Datei speichern |
 | [ ] | Vernünfiges Implemetieren der Mattenrichtung |
-| [ ] | Fahrwinkel bei Objekterkennung abhängig von größe des Objektes machen (vernünftig) |
+| [ ] | Fahrwinkel bei Objekterkennung abhängig von größe des Objektes machen (vernünftig) |#
+| [X] | Objekte nur bei Richtiger Fläche & höhestem Punkt |
