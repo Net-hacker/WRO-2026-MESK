@@ -1,7 +1,15 @@
 import time
 import board
 import adafruit_bno055
+import sys
+import os
 
+# Füge das Hauptverzeichnis (WRO-2026-MESK/python) zum Suchpfad hinzu
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import Lasersensor  # Jetzt findet er die Lasersensor.py im Hauptordner
+
+Lasersensor.Configure_I2C()
 # I2C Verbindung aufbauen
 i2c = board.I2C() 
 # WICHTIG: Hier die 0x29 eintragen, die wir bei i2cdetect gesehen haben

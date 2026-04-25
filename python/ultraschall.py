@@ -1,8 +1,7 @@
 from gpiozero import DistanceSensor
 import config
 import time
-import motor
-import servo
+import steuerung
 
 sLinks = DistanceSensor(echo=21, trigger=20)
 sRechts = DistanceSensor(echo=26, trigger=16)
@@ -26,15 +25,7 @@ def checkStop():
         if distL <= border or distR <= border:
             distLNew, distRNew = ultraRead()
             if distLNew < distL or distRNew < distR:
-                # motor.bewegung(0.0)
-                # time.sleep(0.5)
-                servo.steer(0.0)
-                motor.bewegung(-0.5)
-                time.sleep(0.5)
-                return 1
+                steuerung.alert = True
+                break
         else:
             time.sleep(0.1)
-
-servo.steer(0.0)
-motor.bewegung(0.5)
-checkStop()

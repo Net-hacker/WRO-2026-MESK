@@ -20,3 +20,4 @@
 | [ ] | Hotspot + Notfallhotspot einrichten |
 | [ ] | Brightsness Value in Datei speichern |
 | [ ] | Vernünfiges Implemetieren der Mattenrichtung |
+| [ ] | Fahrwinkel bei Objekterkennung abhängig von größe des Objektes machen (vernünftig) |

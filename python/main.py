@@ -1,4 +1,6 @@
 def main():
+    import Lasersensor
+    Lasersensor.Configure_I2C() # Starte den Lasersensor Scan, damit die Werte in config gespeichert werden
     import threading
     import webserver
     import cam

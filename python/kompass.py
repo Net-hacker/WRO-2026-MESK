@@ -10,6 +10,7 @@ i2c = board.I2C()
 sensor = adafruit_bno055.BNO055_I2C(i2c, address=0x29)
 
 def calc(angleM):
+    angleM = float(angleM)
     print(f"AngleM: {angleM}")
     if angleM > 180:
         angleNew = angleM - 360
@@ -55,12 +56,12 @@ def direction(angle, iter):
 
 # Main Program
 
-def startup(angle):
+def startup():
     kaliLaden.load_calibration(sensor)
 
     # Wartezeit für das Laden der Kalibrierung
     for i in range(0, 3):
         time.sleep(1)
 
-    config.direction = direction(angle, 0)
+    config.direction = direction(config.angle_value, 0)
     print(f"Richtung: {config.direction}")

@@ -24,7 +24,7 @@ def toKonturen(res_frames, Konturen, Objekte):
             )
             for k in konturen:
                 flaeche = cv2.contourArea(k)
-                if flaeche < 5000:
+                if flaeche < 2000:
                     continue  # Rauschen ignorieren
 
                 # Kontur annähern (epsilon = Toleranz)
@@ -37,7 +37,17 @@ def toKonturen(res_frames, Konturen, Objekte):
                     print("Epsilon hat gekracht, setze auf Standardwert 0.2")
                     epsilon = 0.2 * cv2.arcLength(k, closed=True)
                 approx = cv2.approxPolyDP(k, epsilon, closed=True)
+                highestPoint = 0
+                idHighestPoint = 0
+                id = 0
+                for point in approx:
+                    x, y = point[0]
+                    if y > highestPoint:
+                        highestPoint = y
+                        idHighestPoint = id
+                    id += 1
                 ecken = len(approx)
+                # print(f"High: {highestPoint}  ID: {idHighestPoint}")
                 Elemente.append((approx, flaeche, counter))
                 if ecken == 3:
                     shape = "Dreieck"
@@ -46,7 +56,7 @@ def toKonturen(res_frames, Konturen, Objekte):
                 else:
                     shape = f"Polygon ({ecken} Ecken)"
 
-                print(f"{shape}, Fläche: {flaeche:.0f}px²")
+                # print(f"{shape}, Fläche: {flaeche:.0f}px²")
                 if counter == 0: # Grün
                     result = cv2.polylines(result, [approx], isClosed=True, color=(0, 255, 0), thickness=2)
                 elif counter == 1 or counter == 2: # Rot
