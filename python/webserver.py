@@ -169,7 +169,12 @@ def host_webserver(frames, res_frames):
     def set_brightness():
         value = request.args.get('value')
         config.brightness_value = float(value)
+
+        with open(f"Preset/Bright.txt", "w") as file:
+            file.write(f"{float(value)}")
+            file.close()
         print(config.brightness_value)
+        config.UpdateLED()
         return jsonify({"sucess": True})
 
 

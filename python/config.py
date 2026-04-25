@@ -3,6 +3,7 @@ import os
 try:
     from motor import bewegung
     from servo import steer
+    from gpiozero import PWMLED
 except ImportError:
     pass
 import time
@@ -44,6 +45,8 @@ brightness_value = 0
 
 last_servo_change = time.time()
 
+led = PWMLED(27)
+
 def startup():
     try:
         steer(0)
@@ -62,7 +65,8 @@ def startup():
 
     angle_value = load_angle()
 
-    
+    brightness_value = load_bright()
+    UpdateLED()
 
 def load_preset(id):
     if not os.path.exists("Preset/"):
@@ -107,3 +111,19 @@ def load_angle():
         return 0
 
     return angle
+
+def load_brightness():
+    if not os.path.exists("Preset/"):
+        return 0
+
+    try:
+        with open("Preset/Bright.txt", "r") as file:
+             bright = file.read()
+             file.close()
+    except:
+        return 0
+
+    return bright
+
+def UpdateLED():
+    led.value = brightness_values
