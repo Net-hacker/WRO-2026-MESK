@@ -165,10 +165,12 @@ def host_webserver(frames, res_frames):
         config.motor_value = float(value)
         return jsonify({"sucess": True})
 
-    flask_app.run(host='0.0.0.0', port=5000)
-
     @flask_app.route("/set-brightness")
     def set_brightness():
         value = request.args.get('value')
         config.brightness_value = float(value)
+        print(config.brightness_value)
         return jsonify({"sucess": True})
+
+
+    flask_app.run(host='0.0.0.0', port=5000)
