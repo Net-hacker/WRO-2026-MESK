@@ -6,9 +6,7 @@ import os
 
 # Füge das Hauptverzeichnis (WRO-2026-MESK/python) zum Suchpfad hinzu
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import Lasersensor  # Jetzt findet er die Lasersensor.py im Hauptordner
-
 Lasersensor.Configure_I2C()
 # I2C Verbindung aufbauen
 i2c = board.I2C() 

@@ -66,7 +66,7 @@ def startup():
         tolerance = load_tolerance(t)
         tolerance_values[t - 1] = tolerance
 
-    global angle_value
+    global angle_value, brightness_value
     angle_value = load_angle()
 
     kompass.startup()
@@ -132,4 +132,5 @@ def load_brightness():
     return bright
 
 def UpdateLED():
-    led.value = brightness_value
+    global led
+    led.value = float(brightness_value)

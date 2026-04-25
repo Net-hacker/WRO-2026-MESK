@@ -2,8 +2,15 @@ import time
 import board
 import digitalio
 import servo
+from collections import deque
+
 
 vl53_r, vl53_l = None, None
+
+left_values = deque(maxlen=5)
+right_values = deque(maxlen=5)
+average_left = 0
+average_right = 0
 
 def Configure_I2C():
     # 1. Pins vorbereiten
@@ -51,6 +58,22 @@ def Configure_I2C():
         print("Laser-Sensor erfolgreich auf 0x31 initialisiert!")
     except Exception as e:
         print(f"Initialisierungsfehler: {e}")
+
+def Scan_Worker():
+    while True:
+        global left_values, right_values, average_left, average_right
+        left = vl53_l.range
+        right = vl53_r.range
+        if (left >= 8000):
+            left = average_left + 100
+        if (right >= 8000):
+            right = average_right + 100
+        left_values.appendleft(left)
+        right_values.appendleft(right)
+        average_left = sum(left_values) // len(left_values)
+        average_right = sum(right_values) // len(right_values)
+        time.sleep(0.1)
+
 
 def Scan():
     while True:
