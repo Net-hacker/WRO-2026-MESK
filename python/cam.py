@@ -4,6 +4,8 @@ import cv2
 import numpy as np
 import config
 
+recording = True
+
 def run_camera(frames, res_frames):
     print("Starte Kamera")
 
@@ -21,6 +23,9 @@ def run_camera(frames, res_frames):
         print("Kamera erfolgreich gestartet")
 
     load_presets()
+
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')  # Codec
+    out = None
 
     while True:
         if config.mode == False: # Wenn das Programm nicht auf dem Pi läuft
@@ -41,11 +46,19 @@ def run_camera(frames, res_frames):
                 time.sleep(0.5)
                 continue
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-
         if frames.full():
             frames.get()  # ältesten Frame verwerfen
         frames.put(frame)
         generate_res(res_frames, frame)
+        if recording:
+            if out is None:
+                height, width, _ = frame.shape
+                fourcc = cv2.VideoWriter_fourcc(*'XVID')
+                out = cv2.VideoWriter('output.avi', fourcc, 30.0, (width, height))
+            out.write(frame)
+        else:
+            out.release()
+            out = None
 
 def generate_res(res_frames, frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
