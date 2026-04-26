@@ -13,11 +13,11 @@ lastObjektPosition = None # None = Zu lange her, -1 = Links, 1 = Rechts
 last_error = 0
 
 # Parameter (empirisch tunen)
-BIAS = 0.4          # Grundkurve in Fahrtrichtung
-Kp = 0.003            # Proportionalanteil
-Kd = 0.0023            # Dämpfung
-TARGETID = 430         # Sollabstand zur Innenbande in mm (rechter Sensor)
-TARGETAG = 190         # Sollabstand zur Außenbande in mm (linker Sensor)
+BIAS = 0.5          # Grundkurve in Fahrtrichtung
+Kp = 0.004            # Proportionalanteil
+Kd = 0.004            # Dämpfung
+TARGETID = 300         # Sollabstand zur Innenbande in mm 
+TARGETAG = 300         # Sollabstand zur Außenbande in mm
 ServoInDirection = BIAS # Fallback
 
 def brain(Objekte):

@@ -76,11 +76,11 @@ def Scan_Worker():
         left = vl53_l.range
         right = vl53_r.range
         if (left >= 8000):
-            left = stable_left + 300
+            left = average_left + 400
         else:
             stable_left = left
         if (right >= 8000):
-            right = stable_right + 300
+            right = average_right + 400
         else:
             stable_right = right
         left_values.appendleft(left)
