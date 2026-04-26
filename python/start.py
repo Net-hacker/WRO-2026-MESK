@@ -1,4 +1,8 @@
 from gpiozero import Button
+import Lasersensor
+Lasersensor.Configure_I2C() # Starte den Lasersensor Scan, damit die Werte in config gespeichert werden
+import config
+config.startup()
 import main
 import time
 import sys

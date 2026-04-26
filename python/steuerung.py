@@ -14,7 +14,7 @@ last_error = 0
 
 # Parameter (empirisch tunen)
 BIAS = 0.4          # Grundkurve in Fahrtrichtung
-Kp = 0.0045            # Proportionalanteil
+Kp = 0.003            # Proportionalanteil
 Kd = 0.0023            # Dämpfung
 TARGETID = 430         # Sollabstand zur Innenbande in mm (rechter Sensor)
 TARGETAG = 190         # Sollabstand zur Außenbande in mm (linker Sensor)

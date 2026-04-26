@@ -23,3 +23,7 @@
 | [X] | Objekte nur bei Richtiger Fläche & höhestem Punkt |
 | [X] | Bug Fix: Ultraschall-Zuruckweichen funktioniert irgendwie immer nur einmal |
 | [ ] | Überprüfung der Richtung anhand Sensoren |
+
+GLEICH:
+| [V] | Masken einstellen (Corona) |
+| [V] | Autonomes Fahren (Values configurieren) |

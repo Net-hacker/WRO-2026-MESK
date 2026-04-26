@@ -1,7 +1,6 @@
 import time
 import board
 import digitalio
-import servo
 from collections import deque
 import numpy as np
 
@@ -77,11 +76,11 @@ def Scan_Worker():
         left = vl53_l.range
         right = vl53_r.range
         if (left >= 8000):
-            left = stable_left + 200
+            left = stable_left + 300
         else:
             stable_left = left
         if (right >= 8000):
-            right = stable_right + 200
+            right = stable_right + 300
         else:
             stable_right = right
         left_values.appendleft(left)

@@ -1,7 +1,5 @@
+import threading
 def main():
-    import Lasersensor
-    Lasersensor.Configure_I2C() # Starte den Lasersensor Scan, damit die Werte in config gespeichert werden
-    import threading
     import webserver
     import cam
     import Objekterkennung
@@ -10,14 +8,20 @@ def main():
     import time
     import config
     import ultraschall as Ultra
+    import Lasersensor
+    import kompass
     try:
+        import servo
         import libcamera
         from picamera2 import Picamera2
     except ImportError:
         print("Modus von Raspberry Pi zu Laptop gewechselt, da libcamera oder picamera2 nicht installiert ist.")
         config.mode = False
     try:
-        config.startup() # Starte die Startup Funktion um die Presets zu laden und den Motor zu stoppen
+        config.UpdateLED()
+        servo.steer(0) # Setze Servo auf Mittelstellung
+        config.direction = kompass.direction(config.angle_value, 0)
+        # config.startup() # Starte die Startup Funktion um die Presets zu laden und den Motor zu stoppen
         Objekte = Queue(maxsize=5)
         frames = Queue(maxsize=5) # Neuen Queue erstellen in welchen die letzten 5 Frames gespeichert werden
         res_frames = Queue(maxsize=5) # Neuen Queue erstellen in welchem die letzten 5 Maskierten Frames gespeichert werden

@@ -1,13 +1,8 @@
 import numpy as np
 import os
-import kompass
-try:
-    from motor import bewegung
-    from servo import steer
-    from gpiozero import PWMLED
-except ImportError:
-    pass
 import time
+from gpiozero import PWMLED
+import kompass
 
 mode = True # Konfiguration um Systemweite Kameramodus zu haben
 
@@ -50,13 +45,9 @@ direction = -1 # Richtung in die der Lauf geht. -1 = kein Wissen, 0 = Links, 1 =
 
 led = PWMLED(27)
 
-def startup():
-    try:
-        steer(0)
-        # bewegung(0.2)
-    except:
-        pass
+STARTUP_GELADEN = False
 
+def startup():
     for m in range(len(mask_values)): # Ufbassa, ob das richtig ist??
         upper, lower = load_preset(m)
         if upper is not None and lower is not None:
@@ -66,13 +57,23 @@ def startup():
         tolerance = load_tolerance(t)
         tolerance_values[t - 1] = tolerance
 
-    global angle_value, brightness_value
+    global angle_value, brightness_value, STARTUP_GELADEN
+    
     angle_value = load_angle()
-
     kompass.startup()
-
     brightness_value = load_brightness()
-    UpdateLED()
+    STARTUP_GELADEN = True
+
+
+
+
+if STARTUP_GELADEN:
+    import kompass
+    try:
+        from motor import bewegung
+        from servo import steer
+    except ImportError:
+        pass
 
 def load_preset(id):
     if not os.path.exists("Preset/"):
@@ -133,4 +134,4 @@ def load_brightness():
 
 def UpdateLED():
     global led
-    led.value = float(brightness_value)
+    led.value = min(1, float(brightness_value))
