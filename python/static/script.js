@@ -4,7 +4,12 @@ import noUiSlider from "https://cdn.jsdelivr.net/npm/nouislider@15.7.0/+esm";
 // Stuff that happens at the begining of the programm
 const container = document.getElementById("stream");
 const slider = document.getElementById("slider");
-const output = document.getElementById("output");
+const outputU = document.getElementById("outputU");
+const outputL = document.getElementById("outputL");
+const tolerance = document.getElementById("toleranceR");
+const toleranceOut = document.getElementById("toleranceV");
+const angle = document.getElementById("angleSlider");
+const angleOut = document.getElementById("angleDisplay");
 var ColorPicker = new iro.ColorPicker("#picker", {
   width: 250,
   color: "rgb(255, 0, 0)",
@@ -66,7 +71,7 @@ ColorPicker.on('color:change', function(color) {
   const h = Math.round(color.hsv.h);
   const s = Math.round(color.hsv.s);
   const v = Math.round(color.hsv.v);
-  output.textContent = `${h}, ${s}, ${v}`;
+  outputL.textContent = `${h}, ${s}, ${v}`;
   const id = Mask;
   fetch("/set_value", {
     method: "POST",
@@ -90,7 +95,7 @@ ColorPicker2.on('color:change', function(color) {
   const h = Math.round(color.hsv.h);
   const s = Math.round(color.hsv.s);
   const v = Math.round(color.hsv.v);
-  output.textContent = `${h}, ${s}, ${v}`;
+  outputU.textContent = `${h}, ${s}, ${v}`;
   const id = Mask;
   fetch("/set_value", {
     method: "POST",
@@ -110,26 +115,85 @@ ColorPicker2.on('color:change', function(color) {
 });
 UpdatePresets(1) //Add Preset Button to document
 change_border(1) //Update slider values
+UpdateTolerance(1) //Update Toleranzen
+UpdateAngle() //Update Winkel
+
+tolerance.oninput = function() {
+  const id = Mask;
+  const toleranceV = (tolerance.value * 0.0008).toFixed(6);
+  toleranceOut.textContent = toleranceV;
+
+  fetch("/send_tolerance", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ID: id,
+      TOLL: toleranceV
+    })
+  })
+  .then(response => response.text())
+  .then(response => console.log(response));
+};
+
+angle.oninput = function() {
+  const id = Mask;
+  const angleV = angle.value;
+  angleOut.textContent = angleV
+
+  fetch("/send_angle", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ANG: angleV
+    })
+  })
+  .then(response => response.text())
+  .catch((e) => console.error(e));
+};
 
 //Functions
 
 function change_border(id) {
   ignore_event = true;
-  Mask = id
+  Mask = id;
 
   fetch(`/get_value?id=${id}`)
   .then(response => response.json())
   .then(data => {
-    const lower = data.LOW
-    const upper = data.UP
+    const lower = data.LOW;
+    const upper = data.UP;
 
     ColorPicker.color.set({ h: lower[0], s: lower[1], v: lower[2] });
     ColorPicker2.color.set({ h: upper[0], s: upper[1], v: upper[2] });
-    ignore_event = false
+    ignore_event = false;
   })
   .catch((e) => console.error(e));
 
   UpdatePresets(id);
+}
+
+function UpdateTolerance(id) {
+  fetch(`/get_tolerance?id=${id}`)
+  .then(response => response.json())
+  .then(data => {
+    const new_tolerance = data.TOLL;
+    tolerance.value = new_tolerance / 0.0008;
+  })
+  .catch((e) => console.error(e));
+}
+
+function UpdateAngle() {
+  fetch(`/get_angle`)
+  .then(response => response.json())
+  .then(data => {
+    const new_angle = data.ANG;
+    angle.value = new_angle / 360;
+  })
+  .catch((e) => console.error(e));
 }
 
 function UpdatePresets(id) {
@@ -232,5 +296,29 @@ function showLive() {
 // Für die onlick Events
 document.getElementById("ResultB").addEventListener("click", showResult);
 document.getElementById("LiveB").addEventListener("click", showLive);
+
+const Motorslider = document.getElementById('motorSlider');
+const display = document.getElementById('motorDisplay');
+Motorslider.addEventListener('input', () => {
+  display.textContent = Motorslider.value;
+  fetch(`/set-motor?value=${Motorslider.value}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch((e) => console.error(e));
+});
+
+const BrightnessSlider = document.getElementById('brightnessSlider');
+const brightnessDisplay = document.getElementById('brightnessDisplay');
+BrightnessSlider.addEventListener('input', () => {
+  brightnessDisplay.textContent = BrightnessSlider.value;
+  fetch(`/set-brightness?value=${BrightnessSlider.value}`)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  })
+  .catch((e) => console.error(e));
+});
 
 window.change_border = change_border;

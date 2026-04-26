@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify, render_template, Response, send_from_
 import cv2
 import numpy as np
 import os
-import config
 import cam
+import config
 
 flask_app = Flask(__name__)
 
@@ -18,10 +18,10 @@ def generate_frames(frames):
                 b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n') # Gibt den Frame als Teil eines MJPEG-Streams zurück.
 
 def pytojshsv(nparray): # Konvertiert ein cv2-Array eines Bildes in colorpicker-Array für js
-    return np.array([int(nparray[0]*2), int(nparray[1]/2.55), int(nparray[2]/2.55)])
+    return np.array([round(nparray[0]*2), int(nparray[1]/2.55), int(nparray[2]/2.55)])
 
 def jstopyhsv(nparray): # Konvertiert ein colorpicker-Array für js eines Bildes in cv2-Array
-    return np.array([int(nparray[0]/2), int(nparray[1]*2.55), int(nparray[2]*2.55)])
+    return np.array([round(nparray[0]/2), int(nparray[1]*2.55), int(nparray[2]*2.55)])
 
 def generate_frames_res(res_frames): # Generiert frames für js
     while True:
@@ -33,22 +33,17 @@ def generate_frames_res(res_frames): # Generiert frames für js
 
 
 def host_webserver(frames, res_frames):
-    @flask_app.route('/') 
-    def index(): 
+    @flask_app.route('/')
+    def index():
         return render_template("index.html")
 
     @flask_app.route('/video_res')
     def video_feed_res():
-        return Response(generate_frames_res(res_frames), mimetype='multipart/x-mixed-replace; boundary=frame') 
+        return Response(generate_frames_res(res_frames), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     @flask_app.route('/video')
     def video_feed():
         return Response(generate_frames(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-    @flask_app.route('/cam')
-    def cam_alias():
-        # Alias to the processed result stream for compatibility with older clients
-        return Response(generate_frames_res(frames), mimetype='multipart/x-mixed-replace; boundary=frame')
 
     @flask_app.route('/set_value', methods=["POST"])
     def set_value():
@@ -62,7 +57,7 @@ def host_webserver(frames, res_frames):
 
         Maske = int(id[0])
         Border = int(id[1])
-        
+
         if len(config.mask_values) >= Maske and len(config.mask_values[Maske - 1]) >= Border:
             config.mask_values[Maske - 1][Border - 1] = arr
         else:
@@ -115,5 +110,72 @@ def host_webserver(frames, res_frames):
         arr2 = pytojshsv(arr2)
 
         return jsonify({"UP": arr1.tolist(), "LOW": arr2.tolist()}), 200
+
+    @flask_app.route("/send_tolerance", methods=["POST"])
+    def tolerancer():
+        data = request.get_json()
+        id = data.get("ID")
+        tolerance = data.get("TOLL")
+
+        if len(config.tolerance_values) >= int(id):
+            config.tolerance_values[int(id) - 1] = float(tolerance)
+        else:
+            print("Error while saving Tolerance: ID is not valid")
+
+        with open(f"Preset/{id}_Tolerance.txt", "w") as file:
+            file.write(f"{float(tolerance)}")
+            file.close()
+
+        return jsonify({"sucess": True})
+
+    @flask_app.route("/get_tolerance")
+    def loadToll():
+        id = request.args.get('id')
+
+        if len(config.tolerance_values) >= int(id):
+            tolerance = config.tolerance_values[int(id) - 1]
+        else:
+            print("Error while getting Tolerance value: ID is not valid")
+            return 400
+
+        return jsonify({"TOLL": tolerance}), 200
+
+    @flask_app.route("/send_angle", methods=["POST"])
+    def angler():
+        data = request.get_json()
+        angle = data.get("ANG")
+
+        config.angle_value = float(angle)
+
+        with open(f"Preset/Angle.txt", "w") as file:
+            file.write(f"{float(angle)}")
+            file.close()
+
+        return jsonify({"sucess": True})
+
+    @flask_app.route("/get_angle")
+    def loadAng():
+        angle = config.angle_value
+
+        return jsonify({"ANG": angle}), 200
+
+    @flask_app.route("/set-motor")
+    def set_motor():
+        value = request.args.get('value')
+        config.speed = float(value)
+        return jsonify({"sucess": True})
+
+    @flask_app.route("/set-brightness")
+    def set_brightness():
+        value = request.args.get('value')
+        config.brightness_value = float(value)
+
+        with open(f"Preset/Bright.txt", "w") as file:
+            file.write(f"{float(value)}")
+            file.close()
+        print(config.brightness_value)
+        config.UpdateLED()
+        return jsonify({"sucess": True})
+
 
     flask_app.run(host='0.0.0.0', port=5000)
