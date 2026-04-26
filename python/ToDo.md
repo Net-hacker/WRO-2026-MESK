@@ -21,3 +21,5 @@
 | [ ] | Vernünfiges Implemetieren der Mattenrichtung |
 | [ ] | Fahrwinkel bei Objekterkennung abhängig von größe des Objektes machen (vernünftig) |#
 | [X] | Objekte nur bei Richtiger Fläche & höhestem Punkt |
+| [X] | Bug Fix: Ultraschall-Zuruckweichen funktioniert irgendwie immer nur einmal |
+| [ ] | Überprüfung der Richtung anhand Sensoren |

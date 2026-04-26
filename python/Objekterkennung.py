@@ -24,7 +24,7 @@ def toKonturen(res_frames, Konturen, Objekte):
             )
             for k in konturen:
                 flaeche = cv2.contourArea(k)
-                if flaeche < 2000:
+                if flaeche < 2500:
                     continue  # Rauschen ignorieren
 
                 # Kontur annähern (epsilon = Toleranz)
@@ -49,9 +49,9 @@ def toKonturen(res_frames, Konturen, Objekte):
 
                 FlächeMax = 10* highestPoint + 0.6 * 5**(0.0184*(highestPoint+30))
                 FlächeMin = (0.991 * 2.71828 + 7 * 3 ** ( 0.0184*(highestPoint-70))) / 1.2
-                print(f"FlächeMin: {FlächeMin}  FlächeMax: {FlächeMax}  Fläche: {flaeche}  HighestPoint: {highestPoint}")
+                # print(f"FlächeMin: {FlächeMin}  FlächeMax: {FlächeMax}  Fläche: {flaeche}  HighestPoint: {highestPoint}")
                 if flaeche < FlächeMin or flaeche > FlächeMax: 
-                    print("Fläche außerhalb der Grenzen, ignoriere Kontur")
+                    # print("Fläche außerhalb der Grenzen, ignoriere Kontur")
                     continue
 
                 ecken = len(approx)

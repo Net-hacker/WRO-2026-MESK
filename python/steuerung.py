@@ -10,18 +10,28 @@ import Lasersensor
 alert = False
 lastObjekttime = 0
 lastObjektPosition = None # None = Zu lange her, -1 = Links, 1 = Rechts
+last_error = 0
+
+# Parameter (empirisch tunen)
+BIAS = 0.4          # Grundkurve in Fahrtrichtung
+Kp = 0.0045            # Proportionalanteil
+Kd = 0.0023            # Dämpfung
+TARGETID = 430         # Sollabstand zur Innenbande in mm (rechter Sensor)
+TARGETAG = 190         # Sollabstand zur Außenbande in mm (linker Sensor)
+ServoInDirection = BIAS # Fallback
 
 def brain(Objekte):
     global alert
-    config.speed = 0
+    config.speed = 0.3#7
     while True:
         if alert == True:
             servo.steer(0.0)
             motor.bewegung(-0.5)
-            time.sleep(0.5)
+            time.sleep(1)
             alert = False
         motor.bewegung(config.speed)
         ServoMove = Objektwinkel(Objekte)
+        # sServoMove = None #TEMP
         if ServoMove is None:
             # print("Kein Objekt erkannt, fahre im Kreis")
             links = Lasersensor.average_left
@@ -36,13 +46,30 @@ def brain(Objekte):
                 InDirection = rechts
                 AntiDirection = links
             elif config.direction == -1: # Kein Wissen Temporär Rechts
-                print("Richtung unbekannt, gehe temporär Rechts")
+                # print("Richtung unbekannt, gehe temporär Rechts")
                 InDirection = rechts
-                AgainDirection = links
+                AntiDirection = links
 
-            ServoInDirection = (1.4 * InDirection + 480) / 600 - 1
-            print("Right: ", Lasersensor.vl53_r.range, "    Left: ", Lasersensor.vl53_l.range, "   ServoInDirection:", InDirection)
-            print(f"ServoInDirection: {InDirection}")
+            global last_error, BIAS, Kp, Kd, TARGETID, TARGETAG, ServoInDirection
+            errorID = TARGETID - InDirection
+            errorAG = AntiDirection - TARGETAG
+            total_conf = Lasersensor.confidence_right +  Lasersensor.confidence_left
+            if total_conf > 0:
+                error = (Lasersensor.confidence_right * errorID + Lasersensor.confidence_left * errorAG) / total_conf
+            else:
+                error = 0
+            error = error if config.direction == 1 else -error
+            MAX_D_ERROR = 50
+            d_error = max(-MAX_D_ERROR, min(MAX_D_ERROR, error - last_error))
+            last_error = error
+
+            ServoInDirection = BIAS + Kp * error + Kd * d_error
+            ServoInDirection = max(-1.0, min(1.0, ServoInDirection)) # Begrenze den ServoMove auf [-1, 1]
+
+            print(f"std_l={np.std(Lasersensor.left_values):.0f}  std_r={np.std(Lasersensor.right_values):.0f}  conf_l={Lasersensor.confidence_left:.2f}  conf_r={Lasersensor.confidence_right:.2f}")
+            print(f"ID={Lasersensor.average_right}  AD={Lasersensor.average_left}")
+            print("Right: ", Lasersensor.vl53_r.range, "    Left: ", Lasersensor.vl53_l.range, "   ServoInDirection:", ServoInDirection)
+            print(f"errorID={errorID:.0f}  errorAG={errorAG:.0f}  error={error:.0f}  conf_r={Lasersensor.confidence_right:.2f}  conf_l={Lasersensor.confidence_left:.2f}")
 
             if config.direction == 0: # Links
                 ServoMove = -ServoInDirection

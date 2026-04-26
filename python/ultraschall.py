@@ -15,17 +15,16 @@ def ultraRead():
     if distR != 100 and config.ultra_values[1] != 100:
         config.ultra_values[1] = distR
 
-    print(f"Ultra Links: {distL}  Ultra Rechts: {distR}")
+    # print(f"Ultra Links: {distL}  Ultra Rechts: {distR}")
     return distL, distR
 
 def checkStop():
     while True:
         distL, distR = ultraRead()
-        border = 70 * config.speed
+        border = 90 * config.speed
         if distL <= border or distR <= border:
             distLNew, distRNew = ultraRead()
             if distLNew < distL or distRNew < distR:
                 steuerung.alert = True
-                break
         else:
             time.sleep(0.1)
