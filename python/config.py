@@ -4,6 +4,9 @@ import time
 from gpiozero import PWMLED
 import kompass
 
+
+Rennen = 1 # 1= Eröffnung, 0 = Hinderniss
+
 mode = True # Konfiguration um Systemweite Kameramodus zu haben
 
 # ANLEITUNG ZUM HINZUFÜGEN NEUER MASKEN:

@@ -6,6 +6,7 @@ import servo
 import motor
 import ultraschall as ultra
 import Lasersensor
+from gpiozero import Button
 
 alert = False
 lastObjekttime = 0
@@ -13,16 +14,18 @@ lastObjektPosition = None # None = Zu lange her, -1 = Links, 1 = Rechts
 last_error = 0
 
 # Parameter (empirisch tunen)
-BIAS = 0.5          # Grundkurve in Fahrtrichtung
-Kp = 0.004            # Proportionalanteil
-Kd = 0.004            # Dämpfung
+BIAS = 0.2      # Grundkurve in Fahrtrichtung
+Kp = 0.003            # Proportionalanteil
+Kd = 0.005            # Dämpfung
+TargetIdReal = 0.5
+TargetAgReal = 0.5
 TARGETID = 300         # Sollabstand zur Innenbande in mm 
 TARGETAG = 300         # Sollabstand zur Außenbande in mm
 ServoInDirection = BIAS # Fallback
 
 def brain(Objekte):
     global alert
-    config.speed = 0.3#7
+    config.speed = 0.3
     while True:
         if alert == True:
             servo.steer(0.0)
@@ -30,7 +33,11 @@ def brain(Objekte):
             time.sleep(1)
             alert = False
         motor.bewegung(config.speed)
-        ObjektServo, fläche = Objektwinkel(Objekte)
+        if config.Rennen == 1:
+            ObjektServo = None
+            fläche = 0
+        else:
+            ObjektServo, fläche = Objektwinkel(Objekte)
         # sServoMove = None #TEMP
         LaserServo = Laser()
             # print("Kein Objekt erkannt, fahre im Kreis")
@@ -54,6 +61,8 @@ def brain(Objekte):
             # print(f"Objekt erkannt, ServoMove: {ServoMove}")
             config.servo_value = ServoMove
             servo.steer(ServoMove)
+        #if start.btn.is_pressed:
+        #    sys.exit()
 
 def Laser():
     links = Lasersensor.average_left
@@ -72,7 +81,13 @@ def Laser():
         InDirection = rechts
         AntiDirection = links
 
-    global last_error, BIAS, Kp, Kd, TARGETID, TARGETAG, ServoInDirection
+    global last_error, BIAS, Kp, Kd, TARGETID, TARGETAG, ServoInDirection, TargetAgReal, TargetIdReal
+    if len(Lasersensor.sum_sensors) is not 0:
+        avg = sum(Lasersensor.sum_sensors) / len(Lasersensor.sum_sensors)
+    else:
+        avg = 600
+    TARGETAG = TargetAgReal / avg
+    TARGETID = TargetIdReal / avg
     errorID = TARGETID - InDirection
     errorAG = AntiDirection - TARGETAG
     total_conf = Lasersensor.confidence_right +  Lasersensor.confidence_left

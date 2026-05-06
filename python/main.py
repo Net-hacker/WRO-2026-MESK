@@ -29,7 +29,7 @@ def main():
         threading.Thread(target=Ultra.checkStop).start() # Neuen Thread für die Ultraschall Stop Funktion starten
         threading.Thread(target=Lasersensor.Scan_Worker).start() # Neuen Thread für den Lasersensor Scan starten 
         threading.Thread(target=Objekterkennung.toKonturen, args = (res_frames, Konturen, Objekte)).start()
-        # threading.Thread(target=webserver.host_webserver, args = (frames, Konturen)).start() # Neuen Thread für Webserver starten
+        threading.Thread(target=webserver.host_webserver, args = (frames, Konturen)).start() # Neuen Thread für Webserver starten
         threading.Thread(target=cam.run_camera, args = (frames, res_frames)).start() # Neuen Thread für Kamera starten
         threading.Thread(target=steuerung.brain, args = (Objekte,)).start()
 

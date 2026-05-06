@@ -1,5 +1,9 @@
 ## WRO-2026-MESK
 
+> [!Note]
+> Wir haben den 3. Platz geholt und sind mit dem Projekt fertig.
+> Hier wird es keine weiteren Commits geben!
+
 Das ist das Repository auf welchem der Code für unser Roboter gelagert ist. Wir nehmen mit unserem Roboter nimmt an der WRO 2026 teil.
 
 https://www.worldrobotolympiad.de/
@@ -9,15 +13,6 @@ https://www.worldrobotolympiad.de/saison-2026/aufgaben/future-engineers
 https://www.worldrobotolympiad.de/website/docs/wro2026/WRO2026-FE-Regelwerk.pdf
 
 https://lauschti.github.io/MESK-WRO-Doku/
-
-
-## Raspberry-Pi
-
-Username: wro-user
-Password: WRO123!
-
-Tailscale IP:
-100.86.245.113
 
 ## WICHTIG ZUM DEVELOPEN
 

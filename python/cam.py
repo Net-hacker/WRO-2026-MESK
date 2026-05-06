@@ -6,6 +6,8 @@ import config
 
 recording = True
 
+recording = True
+
 def run_camera(frames, res_frames):
     print("Starte Kamera")
 
@@ -54,11 +56,14 @@ def run_camera(frames, res_frames):
             if out is None:
                 height, width, _ = frame.shape
                 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-                out = cv2.VideoWriter('output.avi', fourcc, 30.0, (width, height))
+                ordner = "/home/wro-user/WRO-2026-MESK/videos"
+                anzahl = len(os.listdir(ordner))
+                print("Video-nummer: ", anzahl)
+                out = cv2.VideoWriter(f'../video/output_{anzahl}.avi', fourcc, 30.0, (width, height))
             out.write(frame)
         else:
-            out.release()
             out = None
+            out.release()
 
 def generate_res(res_frames, frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)

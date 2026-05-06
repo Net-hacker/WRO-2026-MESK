@@ -15,6 +15,7 @@ confidence_left = 0.5
 confidence_right = 0.5
 stable_left = 0
 stable_right = 0
+sum_sensors = deque(maxlen=5)
 
 def Configure_I2C():
     # 1. Pins vorbereiten
@@ -72,21 +73,23 @@ def compute_confidence(buffer, scale=150):
 
 def Scan_Worker():
     while True:
-        global left_values, right_values, average_left, average_right, confidence_left, confidence_right, stable_left, stable_right
+        global left_values, right_values, average_left, average_right, confidence_left, confidence_right, stable_left, stable_right, sum_sensors
         left = vl53_l.range
         right = vl53_r.range
         if (left >= 8000):
-            left = average_left + 400
-        else:
-            stable_left = left
+            left = 20000 #/ average_left + average_left
         if (right >= 8000):
-            right = average_right + 400
+            right = 2000 #/ average_right + average_left
+
+
         else:
             stable_right = right
         left_values.appendleft(left)
         right_values.appendleft(right)
         average_left = sum(left_values) // len(left_values)
         average_right = sum(right_values) // len(right_values)
+        sum_sensors.append(average_left + average_right)
+        print("SUMME: ", sum_sensors)
         confidence_left  = compute_confidence(left_values)
         confidence_right = compute_confidence(right_values)
         time.sleep(0.1)
